@@ -23,12 +23,11 @@ axioms and inference rules as a formal system.
 
 This is what it might look like in natural language :
 
-All beings are made of atoms
+<center><em>All beings are made of atoms</em></center>
 
-Reggie is a being
+<center><em>Reggie is a being</em></center>
 
-Reggie is made of atoms
-
+<center><em>Reggie is made of atoms</em></center>
 In this example we have taken "All beings are made of atoms" and "Reggie is a being" as axioms of
 our system, and the inference rule we used is simply the fact that if a property is true for all
 members of a class, then it must be true for a particular member.
@@ -36,7 +35,7 @@ members of a class, then it must be true for a particular member.
 The point here is not to argue about the truth of the axioms but more so to determine whether
 a proof is valid or not.
 
-A very brief history of Formal Systems
+## A very brief history of Formal Systems
 
 From the end of the 19th century to the middle of the 20th century, many mathematicians worked on
 formalizing Set Theory, from its inception by Georg Cantor to later work by various mathematicians
@@ -54,7 +53,7 @@ a sentence in arithmetic and its opposite. The promise of finally filling the g
 seem to have appealed to young Kurt Gödel and he started his PhD thesis with the intention of
 contributing to Hilbert's dream.
 
-Gödel numbering and representability
+## Gödel numbering and representability
 Besides consistency, there is another notion which is central to understanding Set
 Theory: representability. A weakly representable set has a corresponding formula. A given integer is
 in the set if and only if we can prove the formula to be true for that integer. This essentially
@@ -66,28 +65,37 @@ any formula of the formal language with a natural number. This is today quite in
 we represent in a computer is in binary code. Let us not explain exactly how this is done and assume
 that there is such a mapping. More interestingly, proofs are also represented as numbers...
 
+> TODO : notation Gnumbers}
+
+One key aspect of this is that we can validate / invalidate whether a sequence of statements
+
 The question of whether a number is in a set could be answered by proving that a specific formula is
 true for the number x.
 
 {% raw %}
-$$F \vdash A(x) $$
+$$x \in S_A \iff F \vdash A(x) $$
 {% endraw %}
+Here we have introduced several notations : $F$ is the formal system that we're working with, and
+$A$ is a formula that has a value of True or False for every integer, and corresponds to the set $S_A$
+Here, $F \vdash A(x)$ indicates that it is possible to prove that $A(x)$ is True with the axioms and
+inference rules of F.
+The $\iff$ symbol indicates the provability of $A(x)$ for all elements of the set $S_a$. This
+property is known as weak representability and is very important for what follows, as it establishes
+a bridge between Set Theory and the formal system.
 
+Note that now that we can now use formulas as arguments of other formulas thanks to Godel numbering.
+We could for example define the set of all provable sentences, and find a nice formula that can only
+be proved to be true for the Godel number of provable statements(formulas). And so, we define 
+provability as a formula of the language! [^1]
+
+$$ F \vdash A \implies F \vdash Prov_F(\ulcorner A \urcorner) $$
+
+[^1]: For the sake of brevity, we'll have to take the existence of that formula as given
+
+
+# The Diagonalization Lemma
 With Godel numbering, we can now write equivalent formulas, but using numbers as representations of
 formulas!
-
-⌈B⌉
-
-One key aspect of this is that we can validate / invalidate whether a sequence of statements
-actually proves the final sentence in the formal system.
-
-We are working with the same inference system but we are now really talking about sentences within
-sentences instead of sentences with numbers. We can then define provability as a formula in the
-language! We represent the fact that A is provable in F by a sentence with the Gödel number of A as
-argument : ProvF(⌈A⌉). That sentence is weakly representable since if A is provable, we can prove
-the sentence ProvF(⌈A⌉) by definition. TODO : get notation out of there
-
-The Diagonalization Lemma
 
 Photo by Pixabay on Pexels.com
 Since we can work with formulas as variables, it would be a shame to stop here. It turns out that
@@ -95,8 +103,9 @@ for any formula of the language of F (with only one free variable), say A(x), it
 construct a sentence for which provability is equivalent to the formula. If D is provable, then
 A(⌈D⌉) is true, and if it is false then D is not provable. That sentence's provability is
 inextricably linked to A's true value. This leads us to Gödel's incompleteness theorems.
+$$ F \vdash D \iff A(\ulcorner D \urcorner) $$
 
-Gödel's First Incompleteness Theorem
+## Gödel's First Incompleteness Theorem
 
 Assume F is a consistent formal system which contains sufficient arithmetic. TODO : explain
 arithmetic F,A, [], Then we can construct a sentence GF of the language of F such that GF is true
@@ -106,7 +115,7 @@ cannot prove that sentence since that would mean the sentence is both provable a
 Seeing as we assumed that the system was consistent, that sentence must be true and therefore not
 provable.
 
-Gödel's Second Incompleteness Theorem
+## Gödel's Second Incompleteness Theorem
 We proved that consistency of the system implies that the Gödel sentence is true but unprovable. We
 can see that the system can prove that consistency implies the Gödel sentence's truth. This means
 the consistency of the system cannot be proven, since doing so would prove the Gödel sentence.
@@ -124,7 +133,7 @@ it must be true. Indeed, if it were false, we could find an x that satisfied the
 hence it would disprove the sentence(no matter how difficult to find x is). In this case the
 unprovability of the sentence lead to its proof.
 
-Incompleteness vs Decidability
+## Incompleteness vs Decidability
 
 We've seen that there are theorems that cannot be proven. A theorem will be recursive if there is
 a way of verifying it. A theory is called decidable if the set of its theorems (sentences derivable
@@ -133,7 +142,7 @@ a stronger form of completeness. Undecidability of systems with sufficient arith
 in a similar fashion to Gödel's theorems. Credit goes to Alonzo Church and Alan Turing for that
 proof[5].
 
-Superiority of the human mind to formal systems?
+## Superiority of the human mind to formal systems?
 
 One could conclude from Gödel's theorems that a mathematician is capable to find a sentence to be
 true where formal systems are failing, and therefore no formal system can be devised that can
