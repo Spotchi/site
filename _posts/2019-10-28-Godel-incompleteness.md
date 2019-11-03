@@ -1,8 +1,8 @@
 ---
-layout: page
+layout: post
 title: "Godel's incompleteness theorems : ignorance is a part of maths"
 date: 2019-10-28 18:00:00
-categories: maths
+tags: maths
 use_math: true
 
 ---
@@ -14,7 +14,6 @@ sufficient to deal with most of the problems we encounter, how do we know logic 
 answer this we need to know how to talk about logic "logically".
 
 
-Photo by Pixabay on Pexels.com
 At the core of logic is the formal proof. It is a sequence of sentences in formal language. In order
 to determine whether the proof is valid or not, we will resort to axioms (sentences that are always
 true) and inference rules (a mechanism through which a sentence can be deducted from one or more
@@ -40,9 +39,9 @@ a proof is valid or not.
 From the end of the 19th century to the middle of the 20th century, many mathematicians worked on
 formalizing Set Theory, from its inception by Georg Cantor to later work by various mathematicians
 including Gottlob Frege, Bertrand Russell as well as Ernst Zermelo and Abraham Fraenkel who gave
-their name to ZF(C) (Zermelo-Frankel set theory)which is still in use today.[2]
+their name to ZF(C) (Zermelo-Frankel set theory)which is still in use today.
 
-When in the year 1900 the mathematician David Hilbert published a list of 23 problems [HP], the
+When in the year 1900 the mathematician David Hilbert published a list of 23 problems {% cite hilp --file godel_incompleteness %} , the
 notion was that with a suitable formal system, all of the statements in mathematics could either be
 proved right or wrong. There is no ignorabimus, we can always find out whether a formal sentence is
 true or false. This is what we call Completeness. Hilbert's 10th problem in fact asks for
@@ -54,6 +53,10 @@ seem to have appealed to young Kurt Gödel and he started his PhD thesis with th
 contributing to Hilbert's dream.
 
 ## Gödel numbering and representability
+<em>This paragraph contains some mathematical notation and contain a sketch of the proof of the
+incompleteness theorems. I've tried to make it digestable, but if that's just not your cup of tea,
+go ahead and skip to the First Incompleteness Theorem section</em>
+
 Besides consistency, there is another notion which is central to understanding Set
 Theory: representability. A weakly representable set has a corresponding formula. A given integer is
 in the set if and only if we can prove the formula to be true for that integer. This essentially
@@ -65,10 +68,12 @@ any formula of the formal language with a natural number. This is today quite in
 we represent in a computer is in binary code. Let us not explain exactly how this is done and assume
 that there is such a mapping. More interestingly, proofs are also represented as numbers...
 
-> TODO : notation Gnumbers}
+We will define the code of a formula $A$ as $\ulcorner A \urcorner$. All the rules of logic can then 
+be transposed as functions of the Godel numbers, even the inference rules.
+One key consequence of this is that we can validate / invalidate whether a sequence of statements using
+arithmetic! 
 
-One key aspect of this is that we can validate / invalidate whether a sequence of statements
-
+With that knowledge, let us go back to Set Theory.
 The question of whether a number is in a set could be answered by proving that a specific formula is
 true for the number x.
 
@@ -96,82 +101,87 @@ $$ F \vdash A \implies F \vdash Prov_F(\ulcorner A \urcorner) $$
 # The Diagonalization Lemma
 With Godel numbering, we can now write equivalent formulas, but using numbers as representations of
 formulas!
-
-Photo by Pixabay on Pexels.com
-Since we can work with formulas as variables, it would be a shame to stop here. It turns out that
-for any formula of the language of F (with only one free variable), say A(x), it is possible to
-construct a sentence for which provability is equivalent to the formula. If D is provable, then
-A(⌈D⌉) is true, and if it is false then D is not provable. That sentence's provability is
-inextricably linked to A's true value. This leads us to Gödel's incompleteness theorems.
-$$ F \vdash D \iff A(\ulcorner D \urcorner) $$
+We can put that strange loop in mathematics to find a formula's special "fixed point" sentence. The
+diagonalization lemma tells us that for any formula $A$ we can construct a sentence $D$ such that
+$$ F \vdash D \iff A(\ulcorner D \urcorner)$$
+That sentence's provability is inextricably linked to $A$'s true value. If $D$ is provable, then
+$A(\ulcorner D \urcorner)$ is true, and if it is false then $D$ is not provable. 
+Applying this to the negation of the provability sentence described earlier yields the first
+of Gödel's incompleteness theorems.
 
 ## Gödel's First Incompleteness Theorem
 
-Assume F is a consistent formal system which contains sufficient arithmetic. TODO : explain
-arithmetic F,A, [], Then we can construct a sentence GF of the language of F such that GF is true
-but not provable. This is a direct application of the diagonalization lemma to the negation of the
-provability sentence defined earlier. In short, the sentence is telling us "I am not provable". We
-cannot prove that sentence since that would mean the sentence is both provable and non provable.
-Seeing as we assumed that the system was consistent, that sentence must be true and therefore not
-provable.
+Assuming $F$ is a formal system with sufficient arithmetic[^2] then we can construct a sentence $G_F$
+of the language of $F$ such that $G_F$ is true but not provable. 
+In other terms, we have a sentence $G_F$ that says the following : 
+<center><em>This sentence is not provable </em></center>
+We could try to prove this sentence. But if we succeeded that
+would mean the sentence would be provable and that contradicts its very meaning of the sentence. The
+sentence would then be false and we cannot prove false sentences.
+Is it False then? We encounter a similar problem when assuming the sentence is False, since that
+would again lead us to proving a false sentence.
+Seeing as we assumed that the system was consistent, that sentence is <b>not provable</b>, <b>not
+False</b> and therefore it <b>must be true</b>.
 
 ## Gödel's Second Incompleteness Theorem
-We proved that consistency of the system implies that the Gödel sentence is true but unprovable. We
-can see that the system can prove that consistency implies the Gödel sentence's truth. This means
-the consistency of the system cannot be proven, since doing so would prove the Gödel sentence.
-
-An interesting use case for incompleteness
-
-Maybe all of this is fine, there are indeed sentences that must be true but we can never prove. What
-if we had a way of showing some formula is not provable? We do, it is called regular proof with the
-provability formula as the last sentence. If we do that, then can we deduce that it is true or
-false? Depending on the nature of the sentence this unprovability result might actually lead to
-a proof by contradiction...
-
-If the formula is an existential formula of the form !∃x A(x), it being unprovable would mean that
-it must be true. Indeed, if it were false, we could find an x that satisfied the formula A(x), and
-hence it would disprove the sentence(no matter how difficult to find x is). In this case the
-unprovability of the sentence lead to its proof.
+We <b>have proven</b> that consistency of the system implies that the Gödel sentence is true but 
+unprovable. The second theorem is about consistency and is linked to Hilbert's second problem. It 
+was noted that if a system can prove its consistency, then it must also be able to prove the Gödel
+sentence $G_F$.
+$F$ can prove $Consistency(F)$ 
+then (Gödel's first theorem : $Consistency(F)$ implies that $G_F$ is true)
+If $F$ can prove $Consistency(F)$ then $F$ can prove $G_F$. By contradiction, we can then 
+conclude that consistency cannot be proven.
 
 ## Incompleteness vs Decidability
+Later in the century, Alonzo Church and Alan Turing took a similar approach to prove the
+undecidability of First Order Logic.{% cite hopcroft --file godel_incompleteness %} 
+A theorem that there is a mechanical way to verify is called recursive. Of course if a theorems cannot be proven, then it can hardly be verified mechanically. 
+On the other hand, for a specific set, there might be a way to enumerate elements of the set, 
+but there might not be a general, mechanical way to verify (prove) that a particular number belongs 
+to the set. One example of such a problem is the <b>Halting Problem</b>. It is defining the set of
+programs that terminate. Of course, it is possible to build an infinity of programs that satisfy
+this definition, but for a specific program it is not always possible to know if it will, like
+a program that looks for integers that satisfy Fermat's last theorems.
+A theory is called decidable if all of its theorems (sentences derivable in it) is decidable. 
+Incompleteness of a system implies its undecidability but there are many cases where a theory is
+complete yet undecidable. Gödel himself showed that there are complete systems in First-Order
+Logic, yet First Order Logic is undecidable.
 
-We've seen that there are theorems that cannot be proven. A theorem will be recursive if there is
-a way of verifying it. A theory is called decidable if the set of its theorems (sentences derivable
-in it) is decidable. Incompleteness opens the possibility to undecidability. Decidability is
-a stronger form of completeness. Undecidability of systems with sufficient arithmetic can be proved
-in a similar fashion to Gödel's theorems. Credit goes to Alonzo Church and Alan Turing for that
-proof[5].
+## Humans vs Mechanisms
 
-## Superiority of the human mind to formal systems?
+Some would see these theorems as a fundamental flaw, an acknowledgement by mathematics of its own
+shortcomings, though there really is nothing wrong with probing the limits of our tools for 
+reasoning. Beyond Gödel's sentence which might seem a specific edge case that should not be allowed,
+there are "reasonable" cases that are not provable and even more that are not computable. So is 
+there something missing in our system? Or is there any system at all with sufficient arithmetic capable of 
+completeness? Based on the discussion we just had, it would seem a mathematician is capable to find 
+a sentence to be true where formal systems are not able to prove them. Therefore no formal system can 
+be devised that encompasses the mathematician's knowledge or general human intelligence.
+Though what struck me as I examined the consequences of the GITs, is that we actually used logic to
+come to the incompleteness results. Indeed they are just another set of theorems, inferred from our
+definitions of provability and notations related to Gödel numbering.
+We have found that we cannot always prove the truth, yet on that journey we 
+used the very system, that we are trying to understand better. The incompleteness theorems are now
+just another tennet of mathematics, upon which we can expand and prove more and more theorems. 
 
-One could conclude from Gödel's theorems that a mathematician is capable to find a sentence to be
-true where formal systems are failing, and therefore no formal system can be devised that can
-encompass the mathematician's knowledge and human intelligence. However, the GITs are just another
-set of theorems, and given that theorem and all notation related to Gödel numbering, a formal system
-could just as well reason about the previous example...
+The incompleteness theorems are just stating a system's limit, assuming the system to be consistent.
+Any "logic machine" could verify that proof, and there is no mysterious human factor that sets us
+apart from that machine.
 
-It is useful to remember that the system needs to be consistent in order to find a non-provable
-sentence. From the second theorem, consistency can never be proven in a consistent system with
-sufficient arithmetic, and neither can humans see it to be consistent... Should we think about
-replacing logic then? We are working on a system that wasn't designed for such introspection in the
-first place, it works well for most useful cases. We have found that we cannot always prove the
-truth, yet on that journey we used the very system, that we are trying to understand better. Better
-yet, by using the incompleteness results, we could potentially prove more theorems than without
-it... Decidably strange!
+This mathematical introspection had a major influence in the development of computer
+science. In fact formal systems were a central of artificial intelligence research in its early days.
+However this approach sometimes labeled as Good Old Fashioned Artificial Intelligence (GOFAI) has 
+shown its limits in terms of practicality. In these systems, a gigantic number of axioms and 
+definitions is needed to arrive at a conclusion in all but the most basic of practical cases.
+In recent years, AI has experienced a resurgence of interest, due to availability of data and
+hardware and using non-deductive methods (neural networks, statistical inference). Of course the
+decisions we arrive at using these methods aren't as clean-cut as when using a formal system. And as
+we design machines with higher and higher power of abstraction, it is important to remember, we just
+can't know everything.
 
-It seems the truth of the Godel sentence could almost depend on your philosophy. It is a singularity
-which taught us a lot about the mathematics we use day in and day out. No betterment in the axioms
-or inference rules of the system will fix that. So we all could look for an alternative system that
-will always be right... or accept that some truth is beyond our grasp. We don't know and we will not
-know
+## References
 
-[1] Hilbert Program
+{% bibliography --file godel_incompleteness %}
 
-https://www.ams.org/journals/bull/2000-37-04/S0273-0979-00-00881-8/S0273-0979-00-00881-8.pdf
-
-
-[2] Zermelo-Fraenkel Set Theory 
-[2] Proof Theory 
-[2] Goedel's Incompleteness Theorems
-Introduction to Automata Theory, Languages, and Computation (3rd Edition)
 

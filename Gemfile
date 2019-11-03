@@ -12,6 +12,11 @@ gem "jekyll", "~> 4.0.0"
 # gem "minima", "~> 2.5"
 gem "jekyll-whiteglass"
 gem "jekyll-archives"
+gem "jekyll-paginate-v2"
+
+# Jekyll scholar
+gem "jekyll-scholar"
+
 
 # gem "github-pages", group: :jekyll_plugins
 # If you want to use GitHub Pages, remove the "gem "jekyll"" above and
