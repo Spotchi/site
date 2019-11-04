@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <generator uri="http://jekyllrb.com" version="4.0.0">Jekyll</generator>
+    
+    
+    <link href="/feed.xml" rel="self" type="application/atom+xml" />
+    <link href="/" rel="alternate" type="text/html" />
+    <updated>2019-11-04T17:39:36+00:00</updated>
+    <id>//</id>
+
+    
+    <title type="html">spotchi.github.io</title>
+    
+
+    
+    <subtitle>Musings in technology, mathematics and technology.</subtitle>
+    
+
+    
+
+    
+    
+    <entry>
+        
+        <title type="html">Godel’s incompleteness theorems : the ultimate frontier</title>
+        
+        
+        <link href="/2019/10/28/Godel-incompleteness/" rel="alternate" type="text/html" title="Godel's incompleteness theorems : the ultimate frontier" />
+        
+        <published>2019-10-28T18:00:00+00:00</published>
+        <updated>2019-10-28T18:00:00+00:00</updated>
+        <id>/2019/10/28/Godel-incompleteness</id>
+        <content type="html" xml:base="/2019/10/28/Godel-incompleteness/">&lt;p&gt;For millenia, people have needed a way to discover truth and knowledge about the world. The process was plagued by
+sophistry and inaccuracies before Aristotle gathered his thoughts on the 
+matter in a series of works named &lt;em&gt;The Organon&lt;/em&gt; (translated as “The Instrument”). Since then logic has played a central part in the development of Science and Mathematics, and is still used
+informally in everyday life to decide what is right or wrong.&lt;/p&gt;
+
+&lt;p&gt;Logic is pretty much universal, indeed few could argue against the simple efficacy of a logical argument.
+Over time, logic grew in complexity and power and is now a well-researched branch of mathematics. 
+It is in fact impossible to build a mathematical argument without it.
+Mathematics and logic surround us and are seen as this higher authority, though few explore the
+foundations on which our knowledge is built.
+Aristotle used the word “Instrument”, but these days with the rise of semi-intelligent machines it seems
+more fitting to talk about logic as a mechanism.&lt;/p&gt;
+
+&lt;p&gt;At the core of logic is the formal proof. It is a sequence of sentences in formal language. In order
+to determine whether the proof is valid or not, we will resort to axioms (sentences that are always
+true) and inference rules (a mechanism through which a sentence can be deducted from one or more
+preliminary sentence(s) known as premise(s)). We will refer to a combination of a formal language,
+a set of axioms and inference rules as a formal system.&lt;/p&gt;
+
+&lt;p&gt;This is what a formal proof might look like in natural language :&lt;/p&gt;
+
+&lt;center&gt;&lt;em&gt;All beings are made of atoms&lt;/em&gt;&lt;/center&gt;
+
+&lt;center&gt;&lt;em&gt;Reggie is a being&lt;/em&gt;&lt;/center&gt;
+
+&lt;center&gt;&lt;em&gt;Reggie is made of atoms&lt;/em&gt;&lt;/center&gt;
+
+&lt;p&gt;In this example we have taken “All beings are made of atoms” and “Reggie is a being” as axioms of
+our system, and the inference rule we used is simply the fact that if a property is true for all
+members of a class, then it must be true for a particular member.&lt;/p&gt;
+
+&lt;p&gt;The point here is not to argue about the truth of the axioms but more so to determine whether
+a proof is valid or not.&lt;/p&gt;
+
+&lt;h2 id=&quot;a-very-brief-history-of-formal-systems&quot;&gt;A very brief history of Formal Systems&lt;/h2&gt;
+
+&lt;p&gt;From the end of the 19th century to the middle of the 20th century, many mathematicians worked on
+formalizing Set Theory. From its inception by Georg Cantor to later work by various mathematicians
+including Gottlob Frege, Bertrand Russell as well as Ernst Zermelo and Abraham Fraenkel who gave
+their name to ZF(C) (Zermelo-Frankel set theory) which is still in use today.&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;TODO : make sense&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;When in the year 1900 the mathematician David Hilbert published a list of 23 problems &lt;a class=&quot;citation&quot; href=&quot;#hilp&quot;&gt;(Hilbert, 1900)&lt;/a&gt;, the
+notion was that with a suitable formal system, all of the statements in mathematics could either be
+proved right or wrong.
+ This is what we call &lt;b&gt;completeness&lt;/b&gt;. In fact, Hilbert’s 10th problem asks for
+a construction of the solution for a specific class of equations, the Diophantine equations,
+assuming that there had to be such an algorithm. In his second problem, he also asks for a proof of
+the &lt;b&gt;consistency&lt;/b&gt; of the axioms of arithmetic, meaning whether it would be impossible to prove
+a sentence in arithmetic and its opposite. The promise of finally filling the gaps in mathematics
+seem to have appealed to young Kurt Gödel and he started his PhD with the intention of
+contributing to Hilbert’s dream.&lt;/p&gt;
+
+&lt;h2 id=&quot;gödel-numbering-and-representability&quot;&gt;Gödel numbering and representability&lt;/h2&gt;
+&lt;p&gt;&lt;em&gt;This paragraph contains some mathematical notation necessary to explain how the incompleteness 
+theorems came to be. If that’s not your cup of tea, go ahead and skip to the First Incompleteness Theorem section&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Besides consistency, there is another notion which is central to understanding Set
+Theory: representability. A weakly representable set has a corresponding formula. A given integer is
+in the set if and only if we can prove the formula to be true for that integer. This essentially
+implies that there is a method to enumerate all elements of the set, but we might not necessarily be
+able to prove that an element is not in the set.&lt;/p&gt;
+
+&lt;p&gt;To enable talking about logic within the language we introduce Gödel numbering, the association of
+any formula of the formal language with a natural number. This is today quite intuitive as anything
+we represent in a computer is in binary code. Let us not explain exactly how this is done and assume
+that there is such a mapping. More interestingly, proofs are also represented as numbers…&lt;/p&gt;
+
+&lt;p&gt;We will define the code of a formula $A$ as $\ulcorner A \urcorner$. All the rules of logic can then 
+be transposed as functions of the Gödel numbers, even the inference rules.
+One key consequence of this is that we can decide whether a sequence of statements is a valid proof 
+using arithmetic!&lt;/p&gt;
+
+&lt;p&gt;With that knowledge, let us go back to Set Theory.
+The question of whether a number is in a set could be answered by proving that a specific formula is
+true for $x$.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;x \in S_A \iff F \vdash A(x) &lt;/script&gt;
+
+&lt;p&gt;Here we have introduced several notations: $F$ is the formal system that we’re working with, and
+$A$ is a formula that has a value of True or False for every integer, and corresponds to the set $S_A$.
+Here, $F \vdash A(x)$ indicates that it is possible to prove that $A(x)$ is True with the axioms and
+inference rules of $F$.
+The $\iff$ symbol indicates the provability of $A(x)$ for all elements of the set $S_a$. This
+property is known as weak representability and is very important for what follows, as it establishes
+a bridge between Set Theory and the formal system.&lt;/p&gt;
+
+&lt;p&gt;We can now use formulas as arguments of other formulas thanks to Gödel numbering.
+We could for example define the set of all provable sentences, and find a nice formula that can only
+be proved to be true for the Gödel number of provable statements (formulas). We define 
+provability as a formula of the language!&lt;sup id=&quot;fnref:1&quot;&gt;&lt;a href=&quot;#fn:1&quot; class=&quot;footnote&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;F \vdash A \implies F \vdash Prov_F(\ulcorner A \urcorner)&lt;/script&gt;
+
+&lt;h1 id=&quot;the-diagonalization-lemma&quot;&gt;The Diagonalization Lemma&lt;/h1&gt;
+&lt;p&gt;With Godel numbering, we can now write equivalent formulas, but using numbers as representations of
+formulas!
+We can use that strange loop in mathematics to find a formula’s special “fixed point” sentence. The
+diagonalization lemma tells us that for any formula $A$ we can construct a sentence $D$ such that:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;F \vdash D \iff A(\ulcorner D \urcorner)&lt;/script&gt;
+
+&lt;p&gt;That sentence’s provability is inextricably linked to $A$’s true value. If $D$ is provable, then
+$A(\ulcorner D \urcorner)$ is true, and if it is false then $D$ is not provable. 
+Applying this to the negation of the provability sentence described earlier yields the first
+of Gödel’s incompleteness theorems.&lt;/p&gt;
+
+&lt;h2 id=&quot;gödels-first-incompleteness-theorem&quot;&gt;Gödel’s First Incompleteness Theorem&lt;/h2&gt;
+
+&lt;p&gt;Assuming $F$ is a formal system with sufficient arithmetic[^2] then we can construct a sentence $G_F$
+of the language of $F$ such that $G_F$ is true but not provable. 
+In other terms, we have a sentence $G_F$ that says the following:&lt;/p&gt;
+
+&lt;center&gt;&lt;em&gt;This sentence is not provable &lt;/em&gt;&lt;/center&gt;
+
+&lt;p&gt;We could try to prove this sentence. But if we succeeded that
+would mean the sentence would be provable which contradicts its very meaning. The
+sentence would then be False and we cannot prove False sentences.
+Is it False then? We encounter a similar problem when assuming the sentence is False, since that
+would again lead us to proving a False sentence.
+Seeing as we assumed that the system was consistent, that sentence is &lt;b&gt;not provable&lt;/b&gt;, &lt;b&gt;not
+False&lt;/b&gt; and therefore it &lt;b&gt;must be True&lt;/b&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;gödels-second-incompleteness-theorem&quot;&gt;Gödel’s Second Incompleteness Theorem&lt;/h2&gt;
+&lt;p&gt;We &lt;b&gt;have proven&lt;/b&gt; that consistency of the system implies that the Gödel sentence is true but 
+unprovable. The second theorem is about consistency and is linked to Hilbert’s second problem. It 
+was noted that if a system can prove its consistency, then it must also be able to prove the Gödel
+sentence $G_F$.&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;$F$ can prove $Consistency(F)$&lt;/li&gt;
+  &lt;li&gt;Gödel’s first theorem: $Consistency(F)$ implies that $G_F$ is true&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;From 1. and 2., we can deduce that if $F$ can prove $Consistency(F)$ then $F$ can prove $G_F$.
+By contradiction, we can then conclude that consistency cannot be proven.&lt;/p&gt;
+
+&lt;h2 id=&quot;incompleteness-vs-decidability&quot;&gt;Incompleteness vs Decidability&lt;/h2&gt;
+&lt;p&gt;Later in the 20^th century, Alonzo Church and Alan Turing took a similar approach to prove the
+undecidability of First Order Logic.&lt;a class=&quot;citation&quot; href=&quot;#hopcroft&quot;&gt;(Hopcroft, Motwani, &amp;amp; Ullman, 2006)&lt;/a&gt; 
+A theorem that there is a mechanical way to verify is called recursive. Of course if a theorem cannot be proven, then it can hardly be verified mechanically. 
+On the other hand, for a specific set, there might be a way to enumerate elements of the set, 
+but there might not be a general, mechanical way to verify (prove) that a particular number belongs 
+to the set. One example of such a problem is the &lt;b&gt;Halting Problem&lt;/b&gt;. It is defining the set of
+programs that terminate. Of course, it is possible to build an infinity of programs that satisfy
+this definition, but for a specific program it is not always possible to know if it will, like
+a program that looks for integers that satisfy Fermat’s last theorems.
+A system is called decidable if all of its theorems (sentences derivable in it) is decidable. 
+Incompleteness of a system implies its undecidability but there are many cases where a system is
+complete yet undecidable. Gödel himself showed that there are complete systems in First-Order
+Logic, yet First Order Logic is undecidable.&lt;/p&gt;
+
+&lt;h2 id=&quot;humans-vs-mechanisms&quot;&gt;Humans vs Mechanisms&lt;/h2&gt;
+
+&lt;p&gt;Some would see these theorems as a fundamental flaw, an acknowledgement by mathematics of its own
+shortcomings, though there really is nothing wrong with probing the limits of our tools for 
+reasoning. Beyond Gödel’s sentence which might seem a specific edge case that should not be allowed,
+there are “reasonable” cases that are not provable and even more that are not computable. So is 
+there something missing in our system? Or is there any system at all with sufficient arithmetic capable of 
+completeness? Based on the discussion we just had, it would seem a mathematician is capable to find 
+a sentence to be true where formal systems are not able to prove them. Therefore no formal system can 
+be devised that encompasses the mathematician’s knowledge or general human intelligence.
+Though what struck me as I examined the consequences of the GITs, is that we actually used logic to
+come to the incompleteness results. Indeed they are just another set of theorems, inferred from our
+definitions of provability and notations related to Gödel numbering.
+We have found that we cannot always prove the truth, yet on that journey we 
+used the very system, that we are trying to understand better. The incompleteness theorems are now
+just another tennet of mathematics, upon which we can expand and prove more and more theorems.&lt;/p&gt;
+
+&lt;p&gt;The incompleteness theorems are just stating a system’s limit, assuming the system to be consistent.
+Any “logic machine” could verify that proof, and there is no mysterious human factor that sets us
+apart from that machine.&lt;/p&gt;
+
+&lt;p&gt;This mathematical introspection had a major influence in the development of computer
+science. In fact formal systems were a central of artificial intelligence research in its early days.
+However this approach sometimes labeled as Good Old Fashioned Artificial Intelligence (GOFAI) has 
+shown its limits in terms of practicality. In these systems, a gigantic number of axioms and 
+definitions is needed to arrive at a conclusion in all but the most basic of practical cases.
+In recent years, AI has experienced a resurgence of interest, due to availability of data and
+hardware and using non-deductive methods (neural networks, statistical inference). Of course the
+decisions we arrive at using these methods aren’t as clean-cut as when using a formal system. And as
+we design machines with higher and higher power of abstraction, it is important to remember, we just
+can’t know everything.&lt;/p&gt;
+
+&lt;h2 id=&quot;references&quot;&gt;References&lt;/h2&gt;
+
+&lt;ol class=&quot;bibliography&quot;&gt;&lt;li&gt;&lt;span id=&quot;hilp&quot;&gt;Hilbert, D. (1900). Mathematical Problems. &lt;i&gt;BULLETIN OF THE AMERICAN MATHEMATICAL SOCIETY&lt;/i&gt;.&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span id=&quot;sep-proof-theory-development&quot;&gt;von Plato, J. (2018). The Development of Proof Theory. In E. N. Zalta (Ed.), &lt;i&gt;The Stanford Encyclopedia of Philosophy&lt;/i&gt; (Winter 2018). Metaphysics Research Lab, Stanford University.&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span id=&quot;sep-goedel-incompleteness&quot;&gt;Raatikainen, P. (2018). Gödel’s Incompleteness Theorems. In E. N. Zalta (Ed.), &lt;i&gt;The Stanford Encyclopedia of Philosophy&lt;/i&gt; (Fall 2018). Metaphysics Research Lab, Stanford University.&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span id=&quot;nissanke1999introductory&quot;&gt;Nissanke, N. (1999). &lt;i&gt;Introductory Logic and Sets for Computer Scientists&lt;/i&gt;. Addison Wesley Longman.&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span id=&quot;hopcroft&quot;&gt;Hopcroft, J. E., Motwani, R., &amp;amp; Ullman, J. D. (2006). &lt;i&gt;Introduction to Automata Theory, Languages, and Computation (3rd Edition)&lt;/i&gt;. Boston, MA, USA: Addison-Wesley Longman Publishing Co., Inc.&lt;/span&gt;&lt;/li&gt;&lt;/ol&gt;
+
+&lt;div class=&quot;footnotes&quot;&gt;
+  &lt;ol&gt;
+    &lt;li id=&quot;fn:1&quot;&gt;
+      &lt;p&gt;For the sake of brevity, we’ll have to take the existence of that formula as given &lt;a href=&quot;#fnref:1&quot; class=&quot;reversefootnote&quot;&gt;&amp;#8617;&lt;/a&gt;&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/div&gt;</content>
+
+        
+        
+        
+        
+        
+
+        
+
+        
+
+        
+        <category term="maths" />
+        
+
+        
+        <summary type="html">For millenia, people have needed a way to discover truth and knowledge about the world. The process was plagued by sophistry and inaccuracies before Aristotle gathered his thoughts on the matter in a series of works named The Organon (translated as “The Instrument”). Since then logic has played a central part in the development of Science and Mathematics, and is still used informally in everyday life to decide what is right or wrong.</summary>
+        
+
+        
+        
+    </entry>
+    
+    
+</feed>

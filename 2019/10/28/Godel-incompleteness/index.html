@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Godel's incompleteness theorems : the ultimate frontier</title>
+  <meta name="description" content="For millenia, people have needed a way to discover truth and knowledge about the world. The process was plagued bysophistry and inaccuracies before Aristotle...">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="/2019/10/28/Godel-incompleteness/">
+  <link rel="alternate" type="application/rss+xml" title="spotchi.github.io" href="/feed.xml">
+  
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        TeX: {
+            equationNumbers: {
+                autoNumber: "AMS"
+            }
+        },
+        tex2jax: {
+            inlineMath: [ ['$','$'], ],
+            displayMath: [ ['$$','$$'] ],
+            processEscapes: true,
+        }
+    });
+</script>
+<script type="text/javascript"
+src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+  
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">spotchi.github.io</a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>
+
+      <div class="trigger">
+        
+          
+        
+          
+          <a class="page-link" href="/about/">About</a>
+          
+        
+          
+          <a class="page-link" href="/archives/">Blog Archive</a>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">Godel's incompleteness theorems : the ultimate frontier</h1>
+    <p class="post-meta"><time datetime="2019-10-28T18:00:00+00:00" itemprop="datePublished">Oct 28, 2019</time></p>
+  </header>
+
+  <div class="post-content" itemprop="articleBody">
+    <p>For millenia, people have needed a way to discover truth and knowledge about the world. The process was plagued by
+sophistry and inaccuracies before Aristotle gathered his thoughts on the 
+matter in a series of works named <em>The Organon</em> (translated as “The Instrument”). Since then logic has played a central part in the development of Science and Mathematics, and is still used
+informally in everyday life to decide what is right or wrong.</p>
+
+<p>Logic is pretty much universal, indeed few could argue against the simple efficacy of a logical argument.
+Over time, logic grew in complexity and power and is now a well-researched branch of mathematics. 
+It is in fact impossible to build a mathematical argument without it.
+Mathematics and logic surround us and are seen as this higher authority, though few explore the
+foundations on which our knowledge is built.
+Aristotle used the word “Instrument”, but these days with the rise of semi-intelligent machines it seems
+more fitting to talk about logic as a mechanism.</p>
+
+<p>At the core of logic is the formal proof. It is a sequence of sentences in formal language. In order
+to determine whether the proof is valid or not, we will resort to axioms (sentences that are always
+true) and inference rules (a mechanism through which a sentence can be deducted from one or more
+preliminary sentence(s) known as premise(s)). We will refer to a combination of a formal language,
+a set of axioms and inference rules as a formal system.</p>
+
+<p>This is what a formal proof might look like in natural language :</p>
+
+<center><em>All beings are made of atoms</em></center>
+
+<center><em>Reggie is a being</em></center>
+
+<center><em>Reggie is made of atoms</em></center>
+
+<p>In this example we have taken “All beings are made of atoms” and “Reggie is a being” as axioms of
+our system, and the inference rule we used is simply the fact that if a property is true for all
+members of a class, then it must be true for a particular member.</p>
+
+<p>The point here is not to argue about the truth of the axioms but more so to determine whether
+a proof is valid or not.</p>
+
+<h2 id="a-very-brief-history-of-formal-systems">A very brief history of Formal Systems</h2>
+
+<p>From the end of the 19th century to the middle of the 20th century, many mathematicians worked on
+formalizing Set Theory. From its inception by Georg Cantor to later work by various mathematicians
+including Gottlob Frege, Bertrand Russell as well as Ernst Zermelo and Abraham Fraenkel who gave
+their name to ZF(C) (Zermelo-Frankel set theory) which is still in use today.</p>
+<blockquote>
+  <p>TODO : make sense</p>
+</blockquote>
+
+<p>When in the year 1900 the mathematician David Hilbert published a list of 23 problems <a class="citation" href="#hilp">(Hilbert, 1900)</a>, the
+notion was that with a suitable formal system, all of the statements in mathematics could either be
+proved right or wrong.
+ This is what we call <b>completeness</b>. In fact, Hilbert’s 10th problem asks for
+a construction of the solution for a specific class of equations, the Diophantine equations,
+assuming that there had to be such an algorithm. In his second problem, he also asks for a proof of
+the <b>consistency</b> of the axioms of arithmetic, meaning whether it would be impossible to prove
+a sentence in arithmetic and its opposite. The promise of finally filling the gaps in mathematics
+seem to have appealed to young Kurt Gödel and he started his PhD with the intention of
+contributing to Hilbert’s dream.</p>
+
+<h2 id="gödel-numbering-and-representability">Gödel numbering and representability</h2>
+<p><em>This paragraph contains some mathematical notation necessary to explain how the incompleteness 
+theorems came to be. If that’s not your cup of tea, go ahead and skip to the First Incompleteness Theorem section</em></p>
+
+<p>Besides consistency, there is another notion which is central to understanding Set
+Theory: representability. A weakly representable set has a corresponding formula. A given integer is
+in the set if and only if we can prove the formula to be true for that integer. This essentially
+implies that there is a method to enumerate all elements of the set, but we might not necessarily be
+able to prove that an element is not in the set.</p>
+
+<p>To enable talking about logic within the language we introduce Gödel numbering, the association of
+any formula of the formal language with a natural number. This is today quite intuitive as anything
+we represent in a computer is in binary code. Let us not explain exactly how this is done and assume
+that there is such a mapping. More interestingly, proofs are also represented as numbers…</p>
+
+<p>We will define the code of a formula $A$ as $\ulcorner A \urcorner$. All the rules of logic can then 
+be transposed as functions of the Gödel numbers, even the inference rules.
+One key consequence of this is that we can decide whether a sequence of statements is a valid proof 
+using arithmetic!</p>
+
+<p>With that knowledge, let us go back to Set Theory.
+The question of whether a number is in a set could be answered by proving that a specific formula is
+true for $x$.</p>
+
+<script type="math/tex; mode=display">x \in S_A \iff F \vdash A(x) </script>
+
+<p>Here we have introduced several notations: $F$ is the formal system that we’re working with, and
+$A$ is a formula that has a value of True or False for every integer, and corresponds to the set $S_A$.
+Here, $F \vdash A(x)$ indicates that it is possible to prove that $A(x)$ is True with the axioms and
+inference rules of $F$.
+The $\iff$ symbol indicates the provability of $A(x)$ for all elements of the set $S_a$. This
+property is known as weak representability and is very important for what follows, as it establishes
+a bridge between Set Theory and the formal system.</p>
+
+<p>We can now use formulas as arguments of other formulas thanks to Gödel numbering.
+We could for example define the set of all provable sentences, and find a nice formula that can only
+be proved to be true for the Gödel number of provable statements (formulas). We define 
+provability as a formula of the language!<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup></p>
+
+<script type="math/tex; mode=display">F \vdash A \implies F \vdash Prov_F(\ulcorner A \urcorner)</script>
+
+<h1 id="the-diagonalization-lemma">The Diagonalization Lemma</h1>
+<p>With Godel numbering, we can now write equivalent formulas, but using numbers as representations of
+formulas!
+We can use that strange loop in mathematics to find a formula’s special “fixed point” sentence. The
+diagonalization lemma tells us that for any formula $A$ we can construct a sentence $D$ such that:</p>
+
+<script type="math/tex; mode=display">F \vdash D \iff A(\ulcorner D \urcorner)</script>
+
+<p>That sentence’s provability is inextricably linked to $A$’s true value. If $D$ is provable, then
+$A(\ulcorner D \urcorner)$ is true, and if it is false then $D$ is not provable. 
+Applying this to the negation of the provability sentence described earlier yields the first
+of Gödel’s incompleteness theorems.</p>
+
+<h2 id="gödels-first-incompleteness-theorem">Gödel’s First Incompleteness Theorem</h2>
+
+<p>Assuming $F$ is a formal system with sufficient arithmetic[^2] then we can construct a sentence $G_F$
+of the language of $F$ such that $G_F$ is true but not provable. 
+In other terms, we have a sentence $G_F$ that says the following:</p>
+
+<center><em>This sentence is not provable </em></center>
+
+<p>We could try to prove this sentence. But if we succeeded that
+would mean the sentence would be provable which contradicts its very meaning. The
+sentence would then be False and we cannot prove False sentences.
+Is it False then? We encounter a similar problem when assuming the sentence is False, since that
+would again lead us to proving a False sentence.
+Seeing as we assumed that the system was consistent, that sentence is <b>not provable</b>, <b>not
+False</b> and therefore it <b>must be True</b>.</p>
+
+<h2 id="gödels-second-incompleteness-theorem">Gödel’s Second Incompleteness Theorem</h2>
+<p>We <b>have proven</b> that consistency of the system implies that the Gödel sentence is true but 
+unprovable. The second theorem is about consistency and is linked to Hilbert’s second problem. It 
+was noted that if a system can prove its consistency, then it must also be able to prove the Gödel
+sentence $G_F$.</p>
+<ol>
+  <li>$F$ can prove $Consistency(F)$</li>
+  <li>Gödel’s first theorem: $Consistency(F)$ implies that $G_F$ is true</li>
+</ol>
+
+<p>From 1. and 2., we can deduce that if $F$ can prove $Consistency(F)$ then $F$ can prove $G_F$.
+By contradiction, we can then conclude that consistency cannot be proven.</p>
+
+<h2 id="incompleteness-vs-decidability">Incompleteness vs Decidability</h2>
+<p>Later in the 20^th century, Alonzo Church and Alan Turing took a similar approach to prove the
+undecidability of First Order Logic.<a class="citation" href="#hopcroft">(Hopcroft, Motwani, &amp; Ullman, 2006)</a> 
+A theorem that there is a mechanical way to verify is called recursive. Of course if a theorem cannot be proven, then it can hardly be verified mechanically. 
+On the other hand, for a specific set, there might be a way to enumerate elements of the set, 
+but there might not be a general, mechanical way to verify (prove) that a particular number belongs 
+to the set. One example of such a problem is the <b>Halting Problem</b>. It is defining the set of
+programs that terminate. Of course, it is possible to build an infinity of programs that satisfy
+this definition, but for a specific program it is not always possible to know if it will, like
+a program that looks for integers that satisfy Fermat’s last theorems.
+A system is called decidable if all of its theorems (sentences derivable in it) is decidable. 
+Incompleteness of a system implies its undecidability but there are many cases where a system is
+complete yet undecidable. Gödel himself showed that there are complete systems in First-Order
+Logic, yet First Order Logic is undecidable.</p>
+
+<h2 id="humans-vs-mechanisms">Humans vs Mechanisms</h2>
+
+<p>Some would see these theorems as a fundamental flaw, an acknowledgement by mathematics of its own
+shortcomings, though there really is nothing wrong with probing the limits of our tools for 
+reasoning. Beyond Gödel’s sentence which might seem a specific edge case that should not be allowed,
+there are “reasonable” cases that are not provable and even more that are not computable. So is 
+there something missing in our system? Or is there any system at all with sufficient arithmetic capable of 
+completeness? Based on the discussion we just had, it would seem a mathematician is capable to find 
+a sentence to be true where formal systems are not able to prove them. Therefore no formal system can 
+be devised that encompasses the mathematician’s knowledge or general human intelligence.
+Though what struck me as I examined the consequences of the GITs, is that we actually used logic to
+come to the incompleteness results. Indeed they are just another set of theorems, inferred from our
+definitions of provability and notations related to Gödel numbering.
+We have found that we cannot always prove the truth, yet on that journey we 
+used the very system, that we are trying to understand better. The incompleteness theorems are now
+just another tennet of mathematics, upon which we can expand and prove more and more theorems.</p>
+
+<p>The incompleteness theorems are just stating a system’s limit, assuming the system to be consistent.
+Any “logic machine” could verify that proof, and there is no mysterious human factor that sets us
+apart from that machine.</p>
+
+<p>This mathematical introspection had a major influence in the development of computer
+science. In fact formal systems were a central of artificial intelligence research in its early days.
+However this approach sometimes labeled as Good Old Fashioned Artificial Intelligence (GOFAI) has 
+shown its limits in terms of practicality. In these systems, a gigantic number of axioms and 
+definitions is needed to arrive at a conclusion in all but the most basic of practical cases.
+In recent years, AI has experienced a resurgence of interest, due to availability of data and
+hardware and using non-deductive methods (neural networks, statistical inference). Of course the
+decisions we arrive at using these methods aren’t as clean-cut as when using a formal system. And as
+we design machines with higher and higher power of abstraction, it is important to remember, we just
+can’t know everything.</p>
+
+<h2 id="references">References</h2>
+
+<ol class="bibliography"><li><span id="hilp">Hilbert, D. (1900). Mathematical Problems. <i>BULLETIN OF THE AMERICAN MATHEMATICAL SOCIETY</i>.</span></li>
+<li><span id="sep-proof-theory-development">von Plato, J. (2018). The Development of Proof Theory. In E. N. Zalta (Ed.), <i>The Stanford Encyclopedia of Philosophy</i> (Winter 2018). Metaphysics Research Lab, Stanford University.</span></li>
+<li><span id="sep-goedel-incompleteness">Raatikainen, P. (2018). Gödel’s Incompleteness Theorems. In E. N. Zalta (Ed.), <i>The Stanford Encyclopedia of Philosophy</i> (Fall 2018). Metaphysics Research Lab, Stanford University.</span></li>
+<li><span id="nissanke1999introductory">Nissanke, N. (1999). <i>Introductory Logic and Sets for Computer Scientists</i>. Addison Wesley Longman.</span></li>
+<li><span id="hopcroft">Hopcroft, J. E., Motwani, R., &amp; Ullman, J. D. (2006). <i>Introduction to Automata Theory, Languages, and Computation (3rd Edition)</i>. Boston, MA, USA: Addison-Wesley Longman Publishing Co., Inc.</span></li></ol>
+
+<div class="footnotes">
+  <ol>
+    <li id="fn:1">
+      <p>For the sake of brevity, we’ll have to take the existence of that formula as given <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+  </div>
+
+</article>
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">spotchi.github.io</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li>spotchi.github.io</li>
+          <li><a href="mailto:quentin.laurent93@gmail.com">quentin.laurent93@gmail.com</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/spotchi"><span class="icon icon--github"><svg viewBox="0 0 16 16"><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">spotchi</span></a>
+
+          </li>
+          
+
+          
+          <li>
+            <a href="https://twitter.com/jekyllrb"><span class="icon icon--twitter"><svg viewBox="0 0 16 16"><path fill="#828282" d="M15.969,3.058c-0.586,0.26-1.217,0.436-1.878,0.515c0.675-0.405,1.194-1.045,1.438-1.809c-0.632,0.375-1.332,0.647-2.076,0.793c-0.596-0.636-1.446-1.033-2.387-1.033c-1.806,0-3.27,1.464-3.27,3.27 c0,0.256,0.029,0.506,0.085,0.745C5.163,5.404,2.753,4.102,1.14,2.124C0.859,2.607,0.698,3.168,0.698,3.767 c0,1.134,0.577,2.135,1.455,2.722C1.616,6.472,1.112,6.325,0.671,6.08c0,0.014,0,0.027,0,0.041c0,1.584,1.127,2.906,2.623,3.206 C3.02,9.402,2.731,9.442,2.433,9.442c-0.211,0-0.416-0.021-0.615-0.059c0.416,1.299,1.624,2.245,3.055,2.271 c-1.119,0.877-2.529,1.4-4.061,1.4c-0.264,0-0.524-0.015-0.78-0.046c1.447,0.928,3.166,1.469,5.013,1.469 c6.015,0,9.304-4.983,9.304-9.304c0-0.142-0.003-0.283-0.009-0.423C14.976,4.29,15.531,3.714,15.969,3.058z"/></svg>
+</span><span class="username">jekyllrb</span></a>
+
+          </li>
+          
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>Musings in technology, mathematics and technology.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>
