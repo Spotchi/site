@@ -1,65 +1,89 @@
 ---
 layout: post
-title: "Godel's incompleteness theorems : the ultimate frontier"
+title: "Godel's incompleteness theorems : how much can we know?"
 date: 2019-10-28 18:00:00
 tags: maths
 use_math: true
 
 ---
-For millenia, people have needed a way to discover truth and knowledge about the world. The process was plagued by
-sophistry and inaccuracies before Aristotle gathered his thoughts on the 
-matter in a series of works named <em>The Organon</em> (translated as "The Instrument"). Since then logic has played a central part in the development of Science and Mathematics, and is still used
-informally in everyday life to decide what is right or wrong.
+For millenia, people have needed a way to discover truth and knowledge about the world. Aristotle gathered his thoughts on the 
+matter in a series of works named <em>The Organon</em>. The title translates as "The Instrument" and 
+conveys a sentiment of accuracy and reliability a subject that was previously much less formal and
+even sometimes twisted by [the sophists](https://en.wikipedia.org/wiki/Sophist) 
+who were eloquent speakers but did not care whether they arrived at the best answer. 
 
-Logic is pretty much universal, indeed few could argue against the simple efficacy of a logical argument.
-Over time, logic grew in complexity and power and is now a well-researched branch of mathematics. 
-It is in fact impossible to build a mathematical argument without it.
+Since then logic has played a central part in the development of Science and Mathematics, and is still used
+informally in everyday life to decide what is right or wrong. Logic has become pretty much universal, 
+in Sciences few could argue against the simple efficacy of a logical argument.
+Over time, logic grew in complexity and power. It is now a well-researched branch of mathematics and 
+is also at the heart of the construction of mathematical arguments, both a means and an end.
 Mathematics and logic surround us and are seen as this higher authority, though few explore the
 foundations on which our knowledge is built.
-Aristotle used the word "Instrument", but these days with the rise of semi-intelligent machines it seems
-more fitting to talk about logic as a mechanism.
+Aristotle used the word "Instrument", but these days with the rise in popularity of artificial intelligence it seems
+more fitting to talk about logic as a mechanism. Let's go ahead and see where drawing this parallel between
+machines and reason takes us. 
 
-At the core of logic is the formal proof. It is a sequence of sentences in formal language. In order
-to determine whether the proof is valid or not, we will resort to axioms (sentences that are always
-true) and inference rules (a mechanism through which a sentence can be deducted from one or more
+# The proof
+
+At the core of logic is the formal proof. It is a sequence of sentences in formal language. The
+formal language is simply the language in which a sentence can be expressed.  
+A sentence is written as 
+
+$$A$$
+
+A formula's Truth value depends on a variable and they are written as follows:
+
+$$A(x)$$
+
+In order to determine whether the proof is valid or not, we will resort to <b>axioms</b> (sentences that are always
+true) and <b>inference rules</b> (a mechanism through which a sentence can be deducted from one or more
 preliminary sentence(s) known as premise(s)). We will refer to a combination of a formal language,
-a set of axioms and inference rules as a formal system.
+a set of axioms and inference rules as a <b>formal system</b>.
 
 This is what a formal proof might look like in natural language :
 
-<center><em>All beings are made of atoms</em></center>
+<center><em>All humans are made of atoms</em></center>
 
-<center><em>Reggie is a being</em></center>
+<center><em>Reggie is a human</em></center>
 
 <center><em>Reggie is made of atoms</em></center>
-
 
 In this example we have taken "All beings are made of atoms" and "Reggie is a being" as axioms of
 our system, and the inference rule we used is simply the fact that if a property is true for all
 members of a class, then it must be true for a particular member.
 
-The point here is not to argue about the truth of the axioms but more so to determine whether
-a proof is valid or not.
+And there we have our first proof. The point here is not to argue about the truth of the axioms but more so to determine whether
+a proof is valid or not. This is of course not a purely mechanical proof. A complete specification
+of axioms and inference rules as well as the language would take several pages, not to mention
+building a mechanism to verify it! Even in papers, a common knowledge of the formal system is
+assumed for brevity's sake.
 
 ## A very brief history of Formal Systems
 
 From the end of the 19th century to the middle of the 20th century, many mathematicians worked on
-formalizing Set Theory. From its inception by Georg Cantor to later work by various mathematicians
-including Gottlob Frege, Bertrand Russell as well as Ernst Zermelo and Abraham Fraenkel who gave
-their name to ZF(C) (Zermelo-Frankel set theory) which is still in use today.
-> TODO : make sense
+formalizing Set Theory. The effort could be said to have started with Georg Cantor, credited with the invention of
+Set Theory, and includes work by mathematicians including Gottlob Frege, Bertrand Russell as well as Ernst Zermelo and Abraham Fraenkel who gave
+their name to [ZF(C)](https://en.wikipedia.org/wiki/Zermelo%E2%80%93Fraenkel_set_theors) (Zermelo-Frankel set theory) which is still in use today.
+
+<figure style="float:right" >
+<img src="https://i.imgflip.com/3fd7us.jpg" title="Hilbert's strong belief in Completeness" width=300>
+<figcaption>Hilbert's strong belief in Completeness</figcaption>
+</figure>
+
 
 When in the year 1900 the mathematician David Hilbert published a list of 23 problems {% cite hilp --file godel_incompleteness %}, the
 notion was that with a suitable formal system, all of the statements in mathematics could either be
-proved right or wrong.
- This is what we call <b>completeness</b>. In fact, Hilbert's 10th problem asks for
+proved right or wrong. This is what we call <b>completeness</b>. 
+In fact, Hilbert's 10th problem asks for
 a construction of the solution for a specific class of equations, the Diophantine equations,
-assuming that there had to be such an algorithm. In his second problem, he also asks for a proof of
+assuming that there had to be such an algorithm. 
+
+
+In his second problem, he also asks for a proof of
 the <b>consistency</b> of the axioms of arithmetic, meaning whether it would be impossible to prove
 a sentence in arithmetic and its opposite. The promise of finally filling the gaps in mathematics
 seem to have appealed to young Kurt Gödel and he started his PhD with the intention of
 contributing to Hilbert's dream.
-
 ## Gödel numbering and representability
 <em>This paragraph contains some mathematical notation necessary to explain how the incompleteness 
 theorems came to be. If that's not your cup of tea, go ahead and skip to the First Incompleteness Theorem section</em>
@@ -88,7 +112,7 @@ true for $x$.
 $$x \in S_A \iff F \vdash A(x) $$
 {% endraw %}
 Here we have introduced several notations: $F$ is the formal system that we're working with, and
-$A$ is a formula that has a value of True or False for every integer, and corresponds to the set $S_A$.
+$A(x)$ is a formula that has a value of True or False for every integer, and corresponds to the set $S_A$.
 Here, $F \vdash A(x)$ indicates that it is possible to prove that $A(x)$ is True with the axioms and
 inference rules of $F$.
 The $\iff$ symbol indicates the provability of $A(x)$ for all elements of the set $S_a$. This
@@ -106,7 +130,7 @@ $$ F \vdash A \implies F \vdash Prov_F(\ulcorner A \urcorner) $$
 
 
 # The Diagonalization Lemma
-With Godel numbering, we can now write equivalent formulas, but using numbers as representations of
+With Gödel numbering, we can now write equivalent formulas, but using numbers as representations of
 formulas!
 We can use that strange loop in mathematics to find a formula's special "fixed point" sentence. The
 diagonalization lemma tells us that for any formula $A$ we can construct a sentence $D$ such that:
@@ -123,6 +147,8 @@ of Gödel's incompleteness theorems.
 Assuming $F$ is a formal system with sufficient arithmetic[^2] then we can construct a sentence $G_F$
 of the language of $F$ such that $G_F$ is true but not provable. 
 In other terms, we have a sentence $G_F$ that says the following: 
+
+[^2]: Sufficient arithmetic means that it contains axioms that allow us to do arithmetic. The minimum set of axioms are [Robinson Arithmetic](https://en.wikipedia.org/wiki/Robinson_arithmetic) for the First Incompleteness theorem and [Peano Arithmetic](https://en.wikipedia.org/wiki/Peano_axioms) for the second
 
 <center><em>This sentence is not provable </em></center>
      
@@ -146,7 +172,7 @@ From 1. and 2., we can deduce that if $F$ can prove $Consistency(F)$ then $F$ ca
 By contradiction, we can then conclude that consistency cannot be proven.
 
 ## Incompleteness vs Decidability
-Later in the 20^th century, Alonzo Church and Alan Turing took a similar approach to prove the
+Later in the twentieth century, Alonzo Church and Alan Turing took a similar approach to prove the
 undecidability of First Order Logic.{% cite hopcroft --file godel_incompleteness %} 
 A theorem that there is a mechanical way to verify is called recursive. Of course if a theorem cannot be proven, then it can hardly be verified mechanically. 
 On the other hand, for a specific set, there might be a way to enumerate elements of the set, 
@@ -166,15 +192,16 @@ Some would see these theorems as a fundamental flaw, an acknowledgement by mathe
 shortcomings, though there really is nothing wrong with probing the limits of our tools for 
 reasoning. Beyond Gödel's sentence which might seem a specific edge case that should not be allowed,
 there are "reasonable" cases that are not provable and even more that are not computable. So is 
-there something missing in our system? Or is there any system at all with sufficient arithmetic capable of 
+there something missing in our system? Is there any system at all with sufficient arithmetic capable of 
 completeness? Based on the discussion we just had, it would seem a mathematician is capable to find 
 a sentence to be true where formal systems are not able to prove them. Therefore no formal system can 
 be devised that encompasses the mathematician's knowledge or general human intelligence.
+
 Though what struck me as I examined the consequences of the GITs, is that we actually used logic to
 come to the incompleteness results. Indeed they are just another set of theorems, inferred from our
 definitions of provability and notations related to Gödel numbering.
 We have found that we cannot always prove the truth, yet on that journey we 
-used the very system, that we are trying to understand better. The incompleteness theorems are now
+used the very system that we are trying to understand better. The incompleteness theorems are now
 just another tennet of mathematics, upon which we can expand and prove more and more theorems. 
 
 The incompleteness theorems are just stating a system's limit, assuming the system to be consistent.
@@ -189,8 +216,8 @@ definitions is needed to arrive at a conclusion in all but the most basic of pra
 In recent years, AI has experienced a resurgence of interest, due to availability of data and
 hardware and using non-deductive methods (neural networks, statistical inference). Of course the
 decisions we arrive at using these methods aren't as clean-cut as when using a formal system. And as
-we design machines with higher and higher power of abstraction, it is important to remember, we just
-can't know everything.
+we design machines with higher and higher power of abstraction, it is important to remember, neither they
+nor us will know everything.
 
 ## References
 

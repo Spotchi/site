@@ -21,10 +21,12 @@
 title: spotchi.github.io
 email: quentin.laurent93@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
-  Musings in technology, mathematics and technology.
+  Musings in technology, mathematics and philosophy
 baseurl: "/site" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
-twitter_username: jekyllrb
+
+# linkedin_username: "quentin"
+# linkedin_link: "www.linkedin.com/in/quentin-laurent-7970aa88"
 github_username:  spotchi
 
 # Build settings

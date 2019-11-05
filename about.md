@@ -4,5 +4,7 @@ title: "About"
 permalink: /about/
 ---
 
-I am a mysterious techie, a lunatic searching for meaning in bits and bytes
+I am a computer and mathematics enthusiast 
+
+In search for meaning in bits and bytes
 
