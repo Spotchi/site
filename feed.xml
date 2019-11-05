@@ -3,10 +3,10 @@
     <generator uri="http://jekyllrb.com" version="4.0.0">Jekyll</generator>
     
     
-    <link href="/feed.xml" rel="self" type="application/atom+xml" />
-    <link href="/" rel="alternate" type="text/html" />
-    <updated>2019-11-05T08:48:15+00:00</updated>
-    <id>//</id>
+    <link href="/site/feed.xml" rel="self" type="application/atom+xml" />
+    <link href="/site/" rel="alternate" type="text/html" />
+    <updated>2019-11-05T09:15:40+00:00</updated>
+    <id>/site//</id>
 
     
     <title type="html">spotchi.github.io</title>
@@ -25,12 +25,12 @@
         <title type="html">Godel’s incompleteness theorems : the ultimate frontier</title>
         
         
-        <link href="/2019/10/28/Godel-incompleteness/" rel="alternate" type="text/html" title="Godel's incompleteness theorems : the ultimate frontier" />
+        <link href="/site/2019/10/28/Godel-incompleteness/" rel="alternate" type="text/html" title="Godel's incompleteness theorems : the ultimate frontier" />
         
         <published>2019-10-28T18:00:00+00:00</published>
         <updated>2019-10-28T18:00:00+00:00</updated>
-        <id>/2019/10/28/Godel-incompleteness</id>
-        <content type="html" xml:base="/2019/10/28/Godel-incompleteness/">&lt;p&gt;For millenia, people have needed a way to discover truth and knowledge about the world. The process was plagued by
+        <id>/site/2019/10/28/Godel-incompleteness</id>
+        <content type="html" xml:base="/site/2019/10/28/Godel-incompleteness/">&lt;p&gt;For millenia, people have needed a way to discover truth and knowledge about the world. The process was plagued by
 sophistry and inaccuracies before Aristotle gathered his thoughts on the 
 matter in a series of works named &lt;em&gt;The Organon&lt;/em&gt; (translated as “The Instrument”). Since then logic has played a central part in the development of Science and Mathematics, and is still used
 informally in everyday life to decide what is right or wrong.&lt;/p&gt;
