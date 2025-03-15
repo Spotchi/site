@@ -4,7 +4,7 @@ title: "Review and notes on the book : Black Swans by Nicholas Nassim Taleb"
 date: 2020-05-23 15:04:00
 tags: books
 use_math: true
-heroImage: '/blog-placeholder-3.jpg'
+heroImage: '/site/blog-placeholder-3.jpg'
 
 ---
 

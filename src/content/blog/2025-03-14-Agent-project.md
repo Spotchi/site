@@ -4,7 +4,7 @@ title: "File Librarian: a gateway project to agentic AI"
 date: 2025-03-14 18:00:00
 tags: AI, project, agents
 use_math: false
-heroImage: '/blog-placeholder-2.jpg'
+heroImage: '/site/blog-placeholder-2.jpg'
 
 ---
 

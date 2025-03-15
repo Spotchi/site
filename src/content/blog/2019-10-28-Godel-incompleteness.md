@@ -3,7 +3,7 @@ title: "Godel's incompleteness theorems : how much can we know?"
 date: 2019-10-28 18:00:00
 tags: [maths]
 # use_math: true
-heroImage: '/blog-placeholder-4.jpg'
+heroImage: '/site/blog-placeholder-4.jpg'
 
 ---
 For millenia, people have needed a way to discover truth and knowledge about the world. Aristotle gathered his thoughts on the 
