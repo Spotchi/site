@@ -8,7 +8,7 @@ import rehypeKatex from "rehype-katex";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://example.com",
+  site: "https://spotchi.github.io/site",
   integrations: [mdx(), sitemap()],
   markdown: {
     remarkPlugins: [remarkMath],
