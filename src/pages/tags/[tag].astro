@@ -1,0 +1,189 @@
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  
+  // Get all unique tags
+  const tags = [...new Set(posts.flatMap(post => post.data.tags || []))];
+  
+  // Create a path for each tag
+  return tags.map(tag => ({
+    params: { tag },
+    props: { 
+      tag,
+      posts: posts.filter(post => post.data.tags?.includes(tag))
+        .sort((a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf())
+    },
+  }));
+}
+
+const { tag, posts } = Astro.props;
+
+<Layout title={`Posts tagged with "${tag}" | Tidal Telescope`}>
+  <div class="tag-page">
+    <h1>Posts tagged with "{tag}"</h1>
+    <p class="post-count">{posts.length} post{posts.length !== 1 ? 's' : ''}</p>
+    
+    <div class="posts">
+      {posts.map(post => (
+        <article class="post-card">
+          <div class="post-date">
+            <time datetime={post.data.date}>
+              {new Date(post.data.date).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+              })}
+            </time>
+          </div>
+          <h2 class="post-title">
+            <a href={`/blog/${post.slug}`}>{post.data.title}</a>
+          </h2>
+          {post.data.description && (
+            <p class="post-excerpt">{post.data.description}</p>
+          )}
+          <div class="post-footer">
+            <a href={`/blog/${post.slug}`} class="read-more">
+              Read more <span>&rarr;</span>
+            </a>
+            {post.data.tags && post.data.tags.length > 0 && (
+              <div class="post-tags">
+                {post.data.tags.map(t => (
+                  <a href={`/tags/${t}`} class={`tag ${t === tag ? 'active' : ''}`}>{t}</a>
+                ))}
+              </div>
+            )}
+          </div>
+        </article>
+      ))}
+    </div>
+    
+    <div class="back-link-container">
+      <a href="/blog" class="back-link">&larr; Back to all posts</a>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .tag-page {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .post-count {
+    color: #666;
+    margin-bottom: 2rem;
+  }
+  
+  .posts {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+  
+  .post-card {
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 2rem;
+  }
+  
+  .post-card:last-child {
+    border-bottom: none;
+  }
+  
+  .post-date {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .post-title {
+    font-size: 1.8rem;
+    margin: 0 0 1rem 0;
+  }
+  
+  .post-title a {
+    color: var(--text-color);
+    text-decoration: none;
+  }
+  
+  .post-title a:hover {
+    color: var(--primary-color);
+  }
+  
+  .post-excerpt {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+  }
+  
+  .post-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+  }
+  
+  .read-more {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .read-more span {
+    margin-left: 0.25rem;
+    transition: transform 0.2s ease;
+  }
+  
+  .read-more:hover span {
+    transform: translateX(4px);
+  }
+  
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .tag {
+    background-color: var(--light-gray);
+    padding: 0.3rem 0.6rem;
+    border-radius: 3px;
+    font-size: 0.8rem;
+    text-decoration: none;
+    color: var(--text-color);
+  }
+  
+  .tag:hover {
+    background-color: var(--border-color);
+  }
+  
+  .tag.active {
+    background-color: var(--primary-color);
+    color: white;
+  }
+  
+  .back-link-container {
+    margin-top: 3rem;
+  }
+  
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  @media (max-width: 768px) {
+    .post-footer {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+  }
+</style> 

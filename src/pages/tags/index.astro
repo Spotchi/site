@@ -1,0 +1,108 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+// Get all blog posts
+const posts = await getCollection('blog');
+
+// Get all unique tags and count posts for each tag
+const tagCounts = posts.reduce((acc, post) => {
+  if (!post.data.tags) return acc;
+  
+  post.data.tags.forEach(tag => {
+    if (!acc[tag]) acc[tag] = 0;
+    acc[tag]++;
+  });
+  
+  return acc;
+}, {});
+
+// Sort tags by count (descending)
+const sortedTags = Object.entries(tagCounts)
+  .sort((a, b) => b[1] - a[1])
+  .map(([tag, count]) => ({ tag, count }));
+---
+
+<Layout title="Tags | Tidal Telescope">
+  <div class="tags-page">
+    <h1>Tags</h1>
+    <p class="intro">Browse all topics covered in our blog</p>
+    
+    <div class="tags-cloud">
+      {sortedTags.map(({ tag, count }) => (
+        <a href={`/tags/${tag}`} class="tag-item">
+          <span class="tag-name">{tag}</span>
+          <span class="tag-count">{count}</span>
+        </a>
+      ))}
+    </div>
+    
+    <div class="back-link-container">
+      <a href="/blog" class="back-link">&larr; Back to all posts</a>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .tags-page {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .intro {
+    color: #666;
+    margin-bottom: 2rem;
+  }
+  
+  .tags-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 3rem;
+  }
+  
+  .tag-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: var(--light-gray);
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    text-decoration: none;
+    color: var(--text-color);
+    transition: all 0.2s ease;
+  }
+  
+  .tag-item:hover {
+    background-color: var(--primary-color);
+    color: white;
+    transform: translateY(-2px);
+  }
+  
+  .tag-name {
+    font-weight: 500;
+  }
+  
+  .tag-count {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 9999px;
+    padding: 0.2rem 0.6rem;
+    font-size: 0.8rem;
+  }
+  
+  .back-link-container {
+    margin-top: 2rem;
+  }
+  
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    font-weight: 500;
+  }
+</style> 

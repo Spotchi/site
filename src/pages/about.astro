@@ -1,0 +1,57 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="About | Spotchi">
+	<div class="about-page">
+		<h1>About Spotchi (Quentin)</h1>
+		
+		<section class="about-section">
+			<h2>In summary</h2>
+			<p>
+I am a computer science and mathematics enthusiast 
+			</p>
+			<p>
+In search for meaning in bits and bytes
+			</p>
+		</section>
+		
+	</div>
+</Layout>
+
+<style>
+	.about-page {
+		max-width: 800px;
+		margin: 0 auto;
+	}
+	
+	h1 {
+		font-size: 2.5rem;
+		margin-bottom: 2rem;
+	}
+	
+	.about-section {
+		margin-bottom: 3rem;
+	}
+	
+	h2 {
+		font-size: 1.8rem;
+		margin-bottom: 1rem;
+		color: var(--primary-color);
+	}
+	
+	p {
+		margin-bottom: 1rem;
+		line-height: 1.7;
+	}
+	
+	a {
+		color: var(--primary-color);
+		text-decoration: none;
+		font-weight: 500;
+	}
+	
+	a:hover {
+		text-decoration: underline;
+	}
+</style>
