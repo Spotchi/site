@@ -9,8 +9,11 @@ heroImage: '/site/filesystem-archi.png'
 ---
 # Overview
 
-I am terrible at organizing my notes and folders in a consistent way. I know I am not alone there, and I see the potential to apply this technology more widely and in the enterprise, but for now I want to focus on getting something useful from the technology with the limited data and a personal use case.
-Let's assume we have guidelines on how to organize a file folder.
+We are getting a lot of AI applications that let us talk to documents. They are useful for summarizing, or even creating new content with the help of our assistant.
+
+One problem I am facing is: I am terrible at organizing my notes and folders in a consistent way. Using various code AI editors I have also noticed that without proper guidance of organization these tools regularly push a structure that might not suit your needs.
+
+So this project is about building an AI agent that will reorganize a folder, all the while refining human- (and machine-)readable guidelines for this. Let's dive in!
 
 ## Topics covered
 - The basics : prompt engineering
@@ -20,9 +23,9 @@ Let's assume we have guidelines on how to organize a file folder.
 
 # Task
 
-The agent will ultimately help with organization of files. We decided to focus on two specific subtasks : 
-1. Organize a set of files according to guidelines. 
-2. Migrate a source folder into a target folder, all the while keeping with the guidelines imposed on the target folder. This is a very real use-case for me since I recently tried out Obsidian as a note-taker and would love to migrate my notes from other tools into a unified structure. 
+The agent will ultimately help with organization of files. We decided to focus on two specific subtasks :
+1. Organize a set of files according to guidelines.
+2. Migrate a source folder into a target folder, all the while keeping with the guidelines imposed on the target folder. This is a very real use-case for me since I recently tried out Obsidian as a note-taker and would love to migrate my notes from other tools into a unified structure.
 
 
 # Approach
@@ -45,7 +48,7 @@ Once we got most of the non-AI moving pieces into place, it is time to iterate o
 
 ## All in one agent
 
-This agent uses file and folder structure. It has the following tools at its disposal : 
+This agent uses file and folder structure. It has the following tools at its disposal :
 
 * get_vault_tree : get the structure of the vault
 * suggest_file_operations: suggests a reorganization of files
