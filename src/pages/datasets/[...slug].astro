@@ -6,7 +6,7 @@ import { SITE_TITLE } from '../../consts';
 export async function getStaticPaths() {
   const datasets = await import('../../data/datasets');
   return datasets.datasets.map((dataset) => ({
-    params: { slug: dataset.id },
+    params: { slug: dataset['@id'] },
     props: { dataset },
   }));
 }
@@ -16,155 +16,164 @@ const { dataset } = Astro.props;
 if (!dataset) {
   return Astro.redirect('/site/404');
 }
+
+// Helper function to safely extract string values from SchemaValue
+function extractString(value: any): string | undefined {
+  if (typeof value === 'string') return value;
+  if (value && typeof value === 'object' && 'name' in value) return value.name;
+  return undefined;
+}
+
+// Helper function to safely extract array values
+function extractArray(value: any): any[] {
+  if (Array.isArray(value)) return value;
+  return [];
+}
+
+// Create a compatible dataset object for the layout
+const compatibleDataset = {
+  name: extractString(dataset.name) || 'Unnamed Dataset',
+  description: extractString(dataset.description) || 'No description available',
+  url: extractString(dataset.url) || '#',
+  license: extractString(dataset.license),
+  creator: extractString(dataset.creator),
+  datePublished: extractString(dataset.datePublished),
+  dateModified: extractString(dataset.dateModified),
+  keywords: extractArray(dataset.keywords).map(k => extractString(k)).filter(Boolean) as string[],
+  distribution: extractArray(dataset.distribution).map(item => ({
+    name: extractString(item.name) || 'Unknown',
+    description: extractString(item.description),
+    encodingFormat: extractString(item.encodingFormat),
+    contentUrl: extractString(item.contentUrl) || '#',
+    fileSize: extractString(item.fileSize)
+  }))
+};
 ---
 
-<DatasetLayout title={dataset.name} dataset={dataset}>
+<DatasetLayout title={compatibleDataset.name} dataset={compatibleDataset}>
   <h2>Dataset Overview</h2>
-  <p>{dataset.sections.overview}</p>
+  <p>{compatibleDataset.description}</p>
   
-  {dataset.sections.coverage && (
+  {compatibleDataset.keywords && compatibleDataset.keywords.length > 0 && (
     <>
-      <h3>{dataset.sections.coverage.title}</h3>
-      <p>{dataset.sections.coverage.content}</p>
-    </>
-  )}
-  
-  {dataset.sections.methodology && (
-    <>
-      <h3>{dataset.sections.methodology.title}</h3>
-      <p>{dataset.sections.methodology.content}</p>
-    </>
-  )}
-  
-  {dataset.sections.applications && (
-    <>
-      <h3>{dataset.sections.applications.title}</h3>
-      <p>{dataset.sections.applications.content}</p>
-      {dataset.sections.applications.items && (
-        <ul>
-          {dataset.sections.applications.items.map((item) => (
-            <li>{item}</li>
-          ))}
-        </ul>
-      )}
-    </>
-  )}
-  
-  {dataset.sections.updateSchedule && (
-    <>
-      <h3>{dataset.sections.updateSchedule.title}</h3>
-      <div class="update-schedule">
-        <div class="schedule-item">
-          <h4>Real-time Data</h4>
-          <p><strong>Frequency:</strong> {dataset.sections.updateSchedule.realTime.frequency}</p>
-          <p><strong>Delay:</strong> {dataset.sections.updateSchedule.realTime.delay}</p>
-          <p><strong>Coverage:</strong> {dataset.sections.updateSchedule.realTime.coverage}</p>
-        </div>
-        <div class="schedule-item">
-          <h4>Historical Data</h4>
-          <p><strong>Daily Aggregation:</strong> {dataset.sections.updateSchedule.batch.daily}</p>
-          <p><strong>Weekly Reports:</strong> {dataset.sections.updateSchedule.batch.weekly}</p>
-          <p><strong>Monthly Analysis:</strong> {dataset.sections.updateSchedule.batch.monthly}</p>
-        </div>
-      </div>
-    </>
-  )}
-  
-  {dataset.sections.formatDetails && (
-    <>
-      <h3>{dataset.sections.formatDetails.title}</h3>
-      <div class="format-details">
-        {dataset.sections.formatDetails.formats.map((format) => (
-          <>
-            <h4>{format.name}</h4>
-            <p>{format.description}</p>
-          </>
+      <h3>Keywords</h3>
+      <div class="keywords">
+        {compatibleDataset.keywords.map((keyword) => (
+          <span class="keyword-tag">{keyword}</span>
         ))}
       </div>
     </>
   )}
   
-  <h3>Citation and Attribution</h3>
-  <p>
-    When using this dataset in publications, research, or other works, please cite:
-  </p>
-  <blockquote>
-    {dataset.sections.citation}
-  </blockquote>
+  {compatibleDataset.distribution && compatibleDataset.distribution.length > 0 && (
+    <>
+      <h3>Data Distribution</h3>
+      <div class="distribution">
+        {compatibleDataset.distribution.map((item) => (
+          <div class="distribution-item">
+            <h4>{item.name}</h4>
+            {item.description && <p>{item.description}</p>}
+            {item.encodingFormat && (
+              <p><strong>Format:</strong> {item.encodingFormat}</p>
+            )}
+            {item.contentUrl && item.contentUrl !== '#' && (
+              <p><a href={item.contentUrl} target="_blank" rel="noopener noreferrer">Download</a></p>
+            )}
+          </div>
+        ))}
+      </div>
+    </>
+  )}
   
-  <h3>Contact and Support</h3>
-  <p>
-    For questions about this dataset, data access, or collaboration opportunities, please contact:
-  </p>
-  <p>
-    <strong>{dataset.sections.contact.team}:</strong><br>
-    Email: {dataset.sections.contact.email}<br>
-    Phone: {dataset.sections.contact.phone}<br>
-    Response time: {dataset.sections.contact.responseTime}
-  </p>
+  {compatibleDataset.creator && (
+    <>
+      <h3>Creator</h3>
+      <p>{compatibleDataset.creator}</p>
+    </>
+  )}
+  
+  {compatibleDataset.license && (
+    <>
+      <h3>License</h3>
+      <p><a href={compatibleDataset.license} target="_blank" rel="noopener noreferrer">View License</a></p>
+    </>
+  )}
+  
+  {compatibleDataset.datePublished && (
+    <>
+      <h3>Publication Date</h3>
+      <p>{compatibleDataset.datePublished}</p>
+    </>
+  )}
+  
+  {compatibleDataset.dateModified && (
+    <>
+      <h3>Last Modified</h3>
+      <p>{compatibleDataset.dateModified}</p>
+    </>
+  )}
 </DatasetLayout>
 
 <style>
-  .update-schedule {
+  .keywords {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1rem 0;
+  }
+  
+  .keyword-tag {
+    background: rgb(var(--accent));
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  
+  .distribution {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
+    gap: 1.5rem;
     margin: 1.5rem 0;
   }
   
-  .schedule-item {
+  .distribution-item {
     background: #f8f9fa;
     padding: 1.5rem;
     border-radius: 8px;
     border-left: 4px solid rgb(var(--accent));
   }
   
-  .schedule-item h4 {
+  .distribution-item h4 {
     margin: 0 0 1rem 0;
     color: rgb(var(--black));
   }
   
-  .schedule-item p {
+  .distribution-item p {
     margin: 0.5rem 0;
     color: rgb(var(--gray));
+    line-height: 1.6;
   }
   
-  .format-details h4 {
+  .distribution-item a {
+    color: rgb(var(--accent));
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .distribution-item a:hover {
+    text-decoration: underline;
+  }
+  
+  h3 {
     color: rgb(var(--black));
-    margin: 1.5rem 0 0.5rem 0;
+    margin: 2rem 0 1rem 0;
+    border-bottom: 2px solid rgb(var(--accent));
+    padding-bottom: 0.5rem;
   }
   
-  .format-details p {
-    color: rgb(var(--gray));
-    line-height: 1.6;
-    margin-bottom: 1rem;
-  }
-  
-  blockquote {
-    background: #f8f9fa;
-    border-left: 4px solid rgb(var(--accent));
-    padding: 1rem 1.5rem;
-    margin: 1.5rem 0;
-    font-style: italic;
-    color: rgb(var(--gray));
-  }
-  
-  ul {
-    margin: 1rem 0;
-    padding-left: 1.5rem;
-  }
-  
-  li {
-    margin: 0.5rem 0;
-    color: rgb(var(--gray));
-    line-height: 1.6;
-  }
-  
-
-  
-  @media (max-width: 720px) {
-    .update-schedule {
-      grid-template-columns: 1fr;
-    }
+  h2 {
+    color: rgb(var(--black));
+    margin: 2rem 0 1rem 0;
   }
 </style>

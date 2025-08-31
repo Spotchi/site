@@ -1,0 +1,213 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { SITE_TITLE } from '../consts';
+import OntologyGraph from '../components/OntologyGraph.astro';
+---
+
+<Layout title={`Ontology - ${SITE_TITLE}`} description="Learn about the schema.org ontology and semantic concepts used on this site">
+  <div class="ontology-header">
+    <h1>Ontology</h1>
+    <p>Understanding the semantic structure and concepts that power this site</p>
+  </div>
+
+  <div class="ontology-content">
+    <section class="schema-org-intro">
+      <h2>What is Schema.org?</h2>
+      <p>
+        <a href="https://schema.org" target="_blank" rel="noopener noreferrer">Schema.org</a> provides shared vocabularies 
+        that help search engines understand web content. This site uses structured data to improve SEO and make content 
+        machine-readable.
+      </p>
+    </section>
+
+    <!-- Add the interactive ontology graph -->
+    <OntologyGraph />
+
+    <section class="concepts-overview">
+      <h2>Key Concepts Used</h2>
+      <p>
+        This site structures content using these core schema.org concepts:
+      </p>
+    </section>
+
+    <section class="concept Organization">
+      <h3>Organization</h3>
+      <p>
+        Represents businesses, institutions, or organized groups. Used to describe creators, publishers, and other entities.
+      </p>
+      <div class="concept-example">
+        <h4>Example</h4>
+        <pre><code>{`{
+  "@type": "Organization",
+  "name": "Jigsaw",
+  "url": "https://jigsaw.google.com"
+}`}</code></pre>
+      </div>
+    </section>
+
+    <section class="concept Person">
+      <h3>Person</h3>
+      <p>
+        Represents individual human beings. Used for authors, creators, and contributors.
+      </p>
+      <div class="concept-example">
+        <h4>Example</h4>
+        <pre><code>{`{
+  "@type": "Person",
+  "name": "John Doe",
+  "jobTitle": "Data Scientist"
+}`}</code></pre>
+      </div>
+    </section>
+
+    <section class="concept LearningResource">
+      <h3>LearningResource</h3>
+      <p>
+        Represents educational content like tutorials, courses, and documentation.
+      </p>
+      <div class="concept-example">
+        <h4>Example</h4>
+        <pre><code>{`{
+  "@type": "LearningResource",
+  "name": "Introduction to Machine Learning",
+  "teaches": "Machine Learning",
+  "educationalLevel": "Beginner"
+}`}</code></pre>
+      </div>
+    </section>
+
+    <section class="concept Dataset">
+      <h3>Dataset</h3>
+      <p>
+        Represents collections of data with metadata about content, format, and distribution.
+      </p>
+      <div class="concept-example">
+        <h4>Example</h4>
+        <pre><code>{`{
+  "@type": "Dataset",
+  "name": "Jigsaw - Agile Community Rules Classification",
+  "creator": {
+    "@type": "Organization",
+    "name": "Jigsaw"
+  },
+  "license": "https://creativecommons.org/licenses/by-sa/4.0/"
+}`}</code></pre>
+      </div>
+    </section>
+
+    <section class="implementation-notes">
+      <h2>Implementation</h2>
+      <p>
+        This site uses JSON-LD format embedded in HTML head sections. 
+        <a href="https://search.google.com/test/rich-results" target="_blank" rel="noopener noreferrer">Validate with Google Rich Results Test</a>.
+      </p>
+    </section>
+  </div>
+</Layout>
+
+<style>
+  .ontology-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .ontology-header h1 {
+    font-size: 2rem;
+    margin: 0 0 0.5rem 0;
+    color: rgb(var(--black));
+  }
+  
+  .ontology-header p {
+    font-size: 1.1rem;
+    color: rgb(var(--gray));
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+  
+  .ontology-content {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  
+  section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  
+  h2 {
+    color: rgb(var(--black));
+    margin: 0 0 1rem 0;
+    font-size: 1.5rem;
+    border-bottom: 2px solid rgb(var(--accent));
+    padding-bottom: 0.5rem;
+  }
+  
+  h3 {
+    color: rgb(var(--black));
+    margin: 0 0 0.5rem 0;
+    font-size: 1.3rem;
+  }
+  
+  h4 {
+    color: rgb(var(--black));
+    margin: 1rem 0 0.5rem 0;
+    font-size: 1rem;
+  }
+  
+  p {
+    color: rgb(var(--gray));
+    line-height: 1.5;
+    margin-bottom: 1rem;
+  }
+  
+  .concept-example {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 6px;
+    border: 1px solid #e9ecef;
+    margin-top: 1rem;
+  }
+  
+  .concept-example pre {
+    background: #2d3748;
+    color: #e2e8f0;
+    padding: 0.75rem;
+    border-radius: 4px;
+    overflow-x: auto;
+    margin: 0;
+  }
+  
+  .concept-example code {
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.3;
+  }
+  
+  .implementation-notes {
+    background: #f8f9fa;
+    text-align: center;
+  }
+  
+  a {
+    color: rgb(var(--accent));
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  
+  @media (max-width: 768px) {
+    section {
+      padding: 1rem;
+    }
+    
+    .ontology-header h1 {
+      font-size: 1.75rem;
+    }
+  }
+</style>

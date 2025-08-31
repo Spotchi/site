@@ -1,0 +1,487 @@
+---
+// Ontology Graph Component
+// Displays a visual representation of schema.org ontologies used in the project
+
+interface OntologyNode {
+  id: string;
+  label: string;
+  type: string;
+  description: string;
+  examples: string[];
+  properties: string[];
+}
+
+interface OntologyEdge {
+  source: string;
+  target: string;
+  label: string;
+}
+
+// Define the ontology nodes based on what's used in the project
+const ontologyNodes: OntologyNode[] = [
+  {
+    id: "Dataset",
+    label: "Dataset",
+    type: "core",
+    description: "Collections of data with metadata about content, format, and distribution",
+    examples: ["Jigsaw Agile Community Rules Classification"],
+    properties: ["name", "description", "url", "creator", "license", "datePublished", "dateModified", "keywords", "distribution"]
+  },
+  {
+    id: "Organization",
+    label: "Organization",
+    type: "entity",
+    description: "Businesses, institutions, or organized groups",
+    examples: ["Jigsaw", "Qualia Works"],
+    properties: ["name", "url", "description"]
+  },
+  {
+    id: "Person",
+    label: "Person",
+    type: "entity",
+    description: "Individual human beings",
+    examples: ["Authors", "Contributors", "Creators"],
+    properties: ["name", "jobTitle", "description"]
+  },
+  {
+    id: "LearningResource",
+    label: "LearningResource",
+    type: "content",
+    description: "Educational content like tutorials, courses, and documentation",
+    examples: ["Blog posts", "Tutorials", "Documentation"],
+    properties: ["name", "teaches", "educationalLevel", "description"]
+  },
+  {
+    id: "DataDownload",
+    label: "DataDownload",
+    type: "distribution",
+    description: "Files available for download",
+    examples: ["train.csv", "test.csv", "sample_submission.csv"],
+    properties: ["name", "description", "encodingFormat", "contentUrl", "fileSize"]
+  },
+  {
+    id: "Place",
+    label: "Place",
+    type: "location",
+    description: "Geographic locations and spatial coverage",
+    examples: ["Geographic regions", "Spatial boundaries"],
+    properties: ["name", "description", "geo"]
+  },
+  {
+    id: "Article",
+    label: "Article",
+    type: "content",
+    description: "Blog posts and written content",
+    examples: ["Agent project blog", "Black Swans review"],
+    properties: ["headline", "author", "datePublished", "description"]
+  }
+];
+
+// Define relationships between ontologies
+const ontologyEdges: OntologyEdge[] = [
+  { source: "Dataset", target: "Organization", label: "creator" },
+  { source: "Dataset", target: "DataDownload", label: "distribution" },
+  { source: "Dataset", target: "Place", label: "spatialCoverage" },
+  { source: "Article", target: "Person", label: "author" },
+  { source: "Article", target: "Organization", label: "publisher" },
+  { source: "LearningResource", target: "Person", label: "creator" },
+  { source: "LearningResource", target: "Organization", label: "provider" },
+  { source: "Person", target: "Place", label: "workLocation" }
+];
+
+// Group nodes by type for better organization
+const nodeTypes = {
+  core: { color: "#3b82f6", borderColor: "#1d4ed8" },
+  entity: { color: "#10b981", borderColor: "#047857" },
+  content: { color: "#f59e0b", borderColor: "#d97706" },
+  distribution: { color: "#8b5cf6", borderColor: "#7c3aed" },
+  location: { color: "#ef4444", borderColor: "#dc2626" }
+};
+---
+
+<div class="ontology-graph-container">
+  <div class="graph-header">
+    <h3>Ontology Relationships</h3>
+    <p>Interactive visualization of schema.org ontologies used in this project</p>
+  </div>
+  
+  <div class="graph-controls">
+    <button class="control-btn" id="reset-view">Reset View</button>
+    <button class="control-btn" id="toggle-labels">Toggle Labels</button>
+    <button class="control-btn" id="stabilize">Stabilize</button>
+    <div class="legend">
+      <div class="legend-item">
+        <span class="legend-color core"></span>
+        <span>Core Types</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-color entity"></span>
+        <span>Entities</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-color content"></span>
+        <span>Content</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-color distribution"></span>
+        <span>Distribution</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-color location"></span>
+        <span>Location</span>
+      </div>
+    </div>
+  </div>
+  
+  <div class="graph-canvas" id="ontology-graph">
+    <!-- Graph will be rendered here -->
+  </div>
+  
+  <div class="node-details" id="node-details" style="display: none;">
+    <h4 id="detail-title"></h4>
+    <p id="detail-description"></p>
+    <div class="detail-examples">
+      <h5>Examples:</h5>
+      <ul id="detail-examples"></ul>
+    </div>
+    <div class="detail-properties">
+      <h5>Properties:</h5>
+      <ul id="detail-properties"></ul>
+    </div>
+  </div>
+</div>
+
+<style>
+  .ontology-graph-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 1rem;
+  }
+  
+  .graph-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .graph-header h3 {
+    margin: 0 0 0.5rem 0;
+    color: rgb(var(--black));
+    font-size: 1.5rem;
+  }
+  
+  .graph-header p {
+    color: rgb(var(--gray));
+    margin: 0;
+  }
+  
+  .graph-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .control-btn {
+    background: rgb(var(--accent));
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+  }
+  
+  .control-btn:hover {
+    background: rgb(var(--accent-dark, 0.8));
+  }
+  
+  .legend {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: rgb(var(--gray));
+  }
+  
+  .legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid;
+  }
+  
+  .legend-color.core { background: #3b82f6; border-color: #1d4ed8; }
+  .legend-color.entity { background: #10b981; border-color: #047857; }
+  .legend-color.content { background: #f59e0b; border-color: #d97706; }
+  .legend-color.distribution { background: #8b5cf6; border-color: #7c3aed; }
+  .legend-color.location { background: #ef4444; border-color: #dc2626; }
+  
+  .graph-canvas {
+    width: 100%;
+    height: 600px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    background: #fafafa;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .node-details {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  
+  .node-details h4 {
+    margin: 0 0 1rem 0;
+    color: rgb(var(--black));
+    font-size: 1.3rem;
+  }
+  
+  .node-details h5 {
+    margin: 1rem 0 0.5rem 0;
+    color: rgb(var(--black));
+    font-size: 1rem;
+  }
+  
+  .node-details p {
+    color: rgb(var(--gray));
+    line-height: 1.5;
+    margin-bottom: 1rem;
+  }
+  
+  .node-details ul {
+    margin: 0;
+    padding-left: 1.5rem;
+    color: rgb(var(--gray));
+  }
+  
+  .node-details li {
+    margin-bottom: 0.25rem;
+  }
+  
+  @media (max-width: 768px) {
+    .graph-controls {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    
+    .legend {
+      justify-content: center;
+    }
+    
+    .graph-canvas {
+      height: 400px;
+    }
+  }
+</style>
+
+<!-- Load D3.js from CDN -->
+<script src="https://d3js.org/d3.v7.min.js"></script>
+
+<script define:vars={{ ontologyNodes, ontologyEdges, nodeTypes }}>
+  // Data is now directly available from Astro via define:vars
+  const nodes = ontologyNodes;
+  const edges = ontologyEdges;
+  
+  // Show node details function (used by both visualizations)
+  function showNodeDetails(node) {
+    const details = document.getElementById('node-details');
+    const title = document.getElementById('detail-title');
+    const description = document.getElementById('detail-description');
+    const examples = document.getElementById('detail-examples');
+    const properties = document.getElementById('detail-properties');
+    
+    if (details && title && description && examples && properties) {
+      title.textContent = node.label;
+      description.textContent = node.description;
+      
+      examples.innerHTML = '';
+      node.examples.forEach((example) => {
+        const li = document.createElement('li');
+        li.textContent = example;
+        examples.appendChild(li);
+      });
+      
+      properties.innerHTML = '';
+      node.properties.forEach((prop) => {
+        const li = document.createElement('li');
+        li.textContent = prop;
+        properties.appendChild(li);
+      });
+      
+      details.style.display = 'block';
+    }
+  }
+
+  // Wait for DOM to be ready
+  document.addEventListener('DOMContentLoaded', function() {
+    const container = document.getElementById('ontology-graph');
+    if (!container) return;
+
+    // Set up the SVG
+    const width = container.clientWidth;
+    const height = 600;
+    
+    const svg = d3.select(container)
+      .append('svg')
+      .attr('width', width)
+      .attr('height', height);
+    
+    // Create arrow marker for edges
+    svg.append('defs').append('marker')
+      .attr('id', 'arrowhead')
+      .attr('viewBox', '-0 -5 10 10')
+      .attr('refX', 20)
+      .attr('refY', 0)
+      .attr('orient', 'auto')
+      .attr('markerWidth', 6)
+      .attr('markerHeight', 6)
+      .attr('xoverflow', 'visible')
+      .append('svg:path')
+      .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
+      .attr('fill', '#999')
+      .style('stroke', 'none');
+
+    // Create force simulation
+    const simulation = d3.forceSimulation(nodes)
+      .force('link', d3.forceLink(edges).id(d => d.id).distance(120))
+      .force('charge', d3.forceManyBody().strength(-300))
+      .force('center', d3.forceCenter(width / 2, height / 2))
+      .force('collision', d3.forceCollide().radius(35));
+
+    // Create links
+    const links = svg.append('g')
+      .selectAll('line')
+      .data(edges)
+      .enter()
+      .append('line')
+      .attr('stroke', '#999')
+      .attr('stroke-width', 2)
+      .attr('stroke-opacity', 0.6)
+      .attr('marker-end', 'url(#arrowhead)');
+
+    // Create link labels
+    const linkLabels = svg.append('g')
+      .selectAll('text')
+      .data(edges)
+      .enter()
+      .append('text')
+      .text(d => d.label)
+      .attr('font-size', '12px')
+      .attr('fill', '#666')
+      .attr('text-anchor', 'middle')
+      .attr('dy', -5);
+
+    // Create nodes
+    const nodeGroups = svg.append('g')
+      .selectAll('g')
+      .data(nodes)
+      .enter()
+      .append('g')
+      .call(d3.drag()
+        .on('start', dragstarted)
+        .on('drag', dragged)
+        .on('end', dragended));
+
+    // Add circles to nodes
+    nodeGroups.append('circle')
+      .attr('r', 30)
+      .attr('fill', d => nodeTypes[d.type]?.color || '#ccc')
+      .attr('stroke', d => nodeTypes[d.type]?.borderColor || '#999')
+      .attr('stroke-width', 3)
+      .style('cursor', 'pointer')
+      .on('click', (event, d) => showNodeDetails(d))
+      .on('mouseover', function(event, d) {
+        d3.select(this).attr('r', 35);
+        d3.select(this).attr('stroke-width', 4);
+      })
+      .on('mouseout', function(event, d) {
+        d3.select(this).attr('r', 30);
+        d3.select(this).attr('stroke-width', 3);
+      });
+
+    // Add labels to nodes with darker text for better readability
+    nodeGroups.append('text')
+      .text(d => d.label)
+      .attr('text-anchor', 'middle')
+      .attr('dy', '0.35em')
+      .attr('font-size', '12px')
+      .attr('font-weight', 'bold')
+      .attr('fill', '#2d3748')
+      .style('pointer-events', 'none');
+
+    // Update positions on simulation tick
+    simulation.on('tick', () => {
+      links
+        .attr('x1', d => d.source.x)
+        .attr('y1', d => d.source.y)
+        .attr('x2', d => d.target.x)
+        .attr('y2', d => d.target.y);
+      
+      linkLabels
+        .attr('x', d => (d.source.x + d.target.x) / 2)
+        .attr('y', d => (d.source.y + d.target.y) / 2);
+      
+      nodeGroups
+        .attr('transform', d => `translate(${d.x},${d.y})`);
+    });
+
+    // Drag functions
+    function dragstarted(event, d) {
+      if (!event.active) simulation.alphaTarget(0.3).restart();
+      d.fx = d.x;
+      d.fy = d.y;
+    }
+
+    function dragged(event, d) {
+      d.fx = event.x;
+      d.fy = event.y;
+    }
+
+    function dragended(event, d) {
+      if (!event.active) simulation.alphaTarget(0);
+      d.fx = null;
+      d.fy = null;
+    }
+
+    // Control button handlers
+    document.getElementById('reset-view')?.addEventListener('click', () => {
+      simulation.alpha(1).restart();
+      nodes.forEach(d => {
+        d.fx = null;
+        d.fy = null;
+      });
+    });
+    
+    document.getElementById('toggle-labels')?.addEventListener('click', () => {
+      const labels = linkLabels.style('opacity');
+      linkLabels.style('opacity', labels === '0' ? '1' : '0');
+    });
+    
+    document.getElementById('stabilize')?.addEventListener('click', () => {
+      simulation.alpha(1).restart();
+    });
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+      const newWidth = container.clientWidth;
+      svg.attr('width', newWidth);
+      simulation.force('center', d3.forceCenter(newWidth / 2, height / 2));
+      simulation.alpha(1).restart();
+    });
+
+  });
+</script> 

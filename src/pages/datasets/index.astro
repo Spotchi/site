@@ -4,6 +4,19 @@ import { SITE_TITLE } from '../../consts';
 import { getAllDatasets } from '../../data/datasets';
 
 const datasets = getAllDatasets();
+
+// Helper function to safely extract string values from SchemaValue
+function extractString(value: any): string | undefined {
+  if (typeof value === 'string') return value;
+  if (value && typeof value === 'object' && 'name' in value) return value.name;
+  return undefined;
+}
+
+// Helper function to safely extract array values
+function extractArray(value: any): any[] {
+  if (Array.isArray(value)) return value;
+  return [];
+}
 ---
 
 <Layout title={`Datasets - ${SITE_TITLE}`} description="Browse and download datasets in various formats with structured metadata">
@@ -13,32 +26,41 @@ const datasets = getAllDatasets();
   </div>
   
   <div class="datasets-grid">
-    {datasets.map((dataset) => (
-      <article class="dataset-card">
-        <div class="dataset-content">
-          <h2 class="dataset-title">
-            <a href={`/site/datasets/${dataset.id}`}>{dataset.name}</a>
-          </h2>
-          <p class="dataset-description">{dataset.description}</p>
-          <div class="dataset-meta">
-            <span class="meta-item">
-              <strong>Creator:</strong> {dataset.creator}
-            </span>
-            <span class="meta-item">
-              <strong>Published:</strong> {new Date(dataset.datePublished).toLocaleDateString()}
-            </span>
+    {datasets.map((dataset) => {
+      const datasetId = dataset['@id'];
+      const datasetName = extractString(dataset.name) || 'Unnamed Dataset';
+      const datasetDescription = extractString(dataset.description) || 'No description available';
+      const datasetCreator = extractString(dataset.creator);
+      const datasetDatePublished = extractString(dataset.datePublished);
+      const datasetKeywords = extractArray(dataset.keywords).map(k => extractString(k)).filter(Boolean) as string[];
+      
+      return (
+        <article class="dataset-card">
+          <div class="dataset-content">
+            <h2 class="dataset-title">
+              <a href={`/site/datasets/${datasetId}`}>{datasetName}</a>
+            </h2>
+            <p class="dataset-description">{datasetDescription}</p>
+            <div class="dataset-meta">
+              <span class="meta-item">
+                <strong>Creator:</strong> {datasetCreator || 'Unknown'}
+              </span>
+              <span class="meta-item">
+                <strong>Published:</strong> {datasetDatePublished ? new Date(datasetDatePublished).toLocaleDateString() : 'Unknown'}
+              </span>
+            </div>
+            <div class="dataset-keywords">
+              {datasetKeywords.map((keyword) => (
+                <span class="keyword-tag">{keyword}</span>
+              ))}
+            </div>
           </div>
-          <div class="dataset-keywords">
-            {dataset.keywords.map((keyword) => (
-              <span class="keyword-tag">{keyword}</span>
-            ))}
+          <div class="dataset-actions">
+            <a href={`/site/datasets/${datasetId}`} class="view-btn">View Dataset</a>
           </div>
-        </div>
-        <div class="dataset-actions">
-          <a href={`/site/datasets/${dataset.id}`} class="view-btn">View Dataset</a>
-        </div>
-      </article>
-    ))}
+        </article>
+      );
+    })}
   </div>
   
   <div class="datasets-info">
