@@ -1,0 +1,170 @@
+---
+import { getDatasetById } from '../../data/datasets';
+import DatasetLayout from '../../layouts/DatasetLayout.astro';
+import { SITE_TITLE } from '../../consts';
+
+export async function getStaticPaths() {
+  const datasets = await import('../../data/datasets');
+  return datasets.datasets.map((dataset) => ({
+    params: { slug: dataset.id },
+    props: { dataset },
+  }));
+}
+
+const { dataset } = Astro.props;
+
+if (!dataset) {
+  return Astro.redirect('/site/404');
+}
+---
+
+<DatasetLayout title={dataset.name} dataset={dataset}>
+  <h2>Dataset Overview</h2>
+  <p>{dataset.sections.overview}</p>
+  
+  {dataset.sections.coverage && (
+    <>
+      <h3>{dataset.sections.coverage.title}</h3>
+      <p>{dataset.sections.coverage.content}</p>
+    </>
+  )}
+  
+  {dataset.sections.methodology && (
+    <>
+      <h3>{dataset.sections.methodology.title}</h3>
+      <p>{dataset.sections.methodology.content}</p>
+    </>
+  )}
+  
+  {dataset.sections.applications && (
+    <>
+      <h3>{dataset.sections.applications.title}</h3>
+      <p>{dataset.sections.applications.content}</p>
+      {dataset.sections.applications.items && (
+        <ul>
+          {dataset.sections.applications.items.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+      )}
+    </>
+  )}
+  
+  {dataset.sections.updateSchedule && (
+    <>
+      <h3>{dataset.sections.updateSchedule.title}</h3>
+      <div class="update-schedule">
+        <div class="schedule-item">
+          <h4>Real-time Data</h4>
+          <p><strong>Frequency:</strong> {dataset.sections.updateSchedule.realTime.frequency}</p>
+          <p><strong>Delay:</strong> {dataset.sections.updateSchedule.realTime.delay}</p>
+          <p><strong>Coverage:</strong> {dataset.sections.updateSchedule.realTime.coverage}</p>
+        </div>
+        <div class="schedule-item">
+          <h4>Historical Data</h4>
+          <p><strong>Daily Aggregation:</strong> {dataset.sections.updateSchedule.batch.daily}</p>
+          <p><strong>Weekly Reports:</strong> {dataset.sections.updateSchedule.batch.weekly}</p>
+          <p><strong>Monthly Analysis:</strong> {dataset.sections.updateSchedule.batch.monthly}</p>
+        </div>
+      </div>
+    </>
+  )}
+  
+  {dataset.sections.formatDetails && (
+    <>
+      <h3>{dataset.sections.formatDetails.title}</h3>
+      <div class="format-details">
+        {dataset.sections.formatDetails.formats.map((format) => (
+          <>
+            <h4>{format.name}</h4>
+            <p>{format.description}</p>
+          </>
+        ))}
+      </div>
+    </>
+  )}
+  
+  <h3>Citation and Attribution</h3>
+  <p>
+    When using this dataset in publications, research, or other works, please cite:
+  </p>
+  <blockquote>
+    {dataset.sections.citation}
+  </blockquote>
+  
+  <h3>Contact and Support</h3>
+  <p>
+    For questions about this dataset, data access, or collaboration opportunities, please contact:
+  </p>
+  <p>
+    <strong>{dataset.sections.contact.team}:</strong><br>
+    Email: {dataset.sections.contact.email}<br>
+    Phone: {dataset.sections.contact.phone}<br>
+    Response time: {dataset.sections.contact.responseTime}
+  </p>
+</DatasetLayout>
+
+<style>
+  .update-schedule {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin: 1.5rem 0;
+  }
+  
+  .schedule-item {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border-left: 4px solid rgb(var(--accent));
+  }
+  
+  .schedule-item h4 {
+    margin: 0 0 1rem 0;
+    color: rgb(var(--black));
+  }
+  
+  .schedule-item p {
+    margin: 0.5rem 0;
+    color: rgb(var(--gray));
+  }
+  
+  .format-details h4 {
+    color: rgb(var(--black));
+    margin: 1.5rem 0 0.5rem 0;
+  }
+  
+  .format-details p {
+    color: rgb(var(--gray));
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+  
+  blockquote {
+    background: #f8f9fa;
+    border-left: 4px solid rgb(var(--accent));
+    padding: 1rem 1.5rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    color: rgb(var(--gray));
+  }
+  
+  ul {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+  }
+  
+  li {
+    margin: 0.5rem 0;
+    color: rgb(var(--gray));
+    line-height: 1.6;
+  }
+  
+
+  
+  @media (max-width: 720px) {
+    .update-schedule {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

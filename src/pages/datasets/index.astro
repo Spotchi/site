@@ -1,0 +1,207 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { SITE_TITLE } from '../../consts';
+import { getAllDatasets } from '../../data/datasets';
+
+const datasets = getAllDatasets();
+---
+
+<Layout title={`Datasets - ${SITE_TITLE}`} description="Browse and download datasets in various formats with structured metadata">
+  <div class="datasets-header">
+    <h1>Datasets</h1>
+    <p>Browse and download datasets in various formats with structured metadata and JSON+LD schema.org compliance.</p>
+  </div>
+  
+  <div class="datasets-grid">
+    {datasets.map((dataset) => (
+      <article class="dataset-card">
+        <div class="dataset-content">
+          <h2 class="dataset-title">
+            <a href={`/site/datasets/${dataset.id}`}>{dataset.name}</a>
+          </h2>
+          <p class="dataset-description">{dataset.description}</p>
+          <div class="dataset-meta">
+            <span class="meta-item">
+              <strong>Creator:</strong> {dataset.creator}
+            </span>
+            <span class="meta-item">
+              <strong>Published:</strong> {new Date(dataset.datePublished).toLocaleDateString()}
+            </span>
+          </div>
+          <div class="dataset-keywords">
+            {dataset.keywords.map((keyword) => (
+              <span class="keyword-tag">{keyword}</span>
+            ))}
+          </div>
+        </div>
+        <div class="dataset-actions">
+          <a href={`/site/datasets/${dataset.id}`} class="view-btn">View Dataset</a>
+        </div>
+      </article>
+    ))}
+  </div>
+  
+  <div class="datasets-info">
+    <h2>About Our Datasets</h2>
+    <p>
+      All datasets are published with comprehensive metadata following the 
+      <a href="https://schema.org/Dataset" target="_blank" rel="noopener">schema.org Dataset specification</a>. 
+      This ensures maximum discoverability and compatibility with search engines and data catalogs.
+    </p>
+    <p>
+      Each dataset includes structured JSON+LD markup, detailed descriptions, licensing information, 
+      and multiple distribution formats for easy access and analysis.
+    </p>
+  </div>
+</Layout>
+
+<style>
+  .datasets-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+  
+  .datasets-header h1 {
+    font-size: 2.5rem;
+    margin: 0 0 1rem 0;
+    color: rgb(var(--black));
+  }
+  
+  .datasets-header p {
+    font-size: 1.2rem;
+    color: rgb(var(--gray));
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+  
+  .datasets-grid {
+    display: grid;
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+  
+  .dataset-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .dataset-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  }
+  
+  .dataset-content {
+    padding: 2rem;
+  }
+  
+  .dataset-title {
+    margin: 0 0 1rem 0;
+    font-size: 1.5rem;
+  }
+  
+  .dataset-title a {
+    color: rgb(var(--black));
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  
+  .dataset-title a:hover {
+    color: rgb(var(--accent));
+  }
+  
+  .dataset-description {
+    color: rgb(var(--gray));
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+  
+  .dataset-meta {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .meta-item {
+    color: rgb(var(--gray));
+  }
+  
+  .dataset-keywords {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .keyword-tag {
+    background: #f0f0f0;
+    color: rgb(var(--gray));
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+  
+  .dataset-actions {
+    padding: 1rem 2rem;
+    background: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+  }
+  
+  .view-btn {
+    display: inline-block;
+    background: rgb(var(--accent));
+    color: white;
+    padding: 0.75rem 1.5rem;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+  }
+  
+  .view-btn:hover {
+    background: rgb(var(--accent-dark));
+  }
+  
+  .datasets-info {
+    background: #f8f9fa;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-top: 2rem;
+  }
+  
+  .datasets-info h2 {
+    margin: 0 0 1rem 0;
+    color: rgb(var(--black));
+  }
+  
+  .datasets-info p {
+    color: rgb(var(--gray));
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+  
+  .datasets-info a {
+    color: rgb(var(--accent));
+    text-decoration: none;
+  }
+  
+  .datasets-info a:hover {
+    text-decoration: underline;
+  }
+  
+  @media (max-width: 720px) {
+    .datasets-header h1 {
+      font-size: 2rem;
+    }
+    
+    .dataset-meta {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  }
+</style>

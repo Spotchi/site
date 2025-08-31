@@ -1,0 +1,301 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+  dataset: {
+    name: string;
+    description: string;
+    url: string;
+    license?: string;
+    creator?: string;
+    datePublished?: string;
+    dateModified?: string;
+    keywords?: string[];
+    distribution?: Array<{
+      name: string;
+      description?: string;
+      encodingFormat?: string;
+      contentUrl: string;
+      fileSize?: string;
+    }>;
+    advancedProperties?: {
+      spatialCoverage?: {
+        name: string;
+        description: string;
+        geo?: {
+          type: string;
+          box?: string;
+        };
+      };
+      temporalCoverage?: string;
+      variableMeasured?: string[];
+      measurementTechnique?: string[];
+    };
+  };
+}
+
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE_TITLE } from '../consts';
+
+const { title, description, dataset } = Astro.props;
+
+// Generate JSON+LD structured data for the dataset
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": dataset.name,
+  "description": dataset.description,
+  "url": dataset.url,
+  "license": dataset.license || "https://creativecommons.org/licenses/by/4.0/",
+  "creator": dataset.creator || SITE_TITLE,
+  "datePublished": dataset.datePublished || new Date().toISOString().split('T')[0],
+  "dateModified": dataset.dateModified || new Date().toISOString().split('T')[0],
+  "keywords": dataset.keywords || [],
+  "distribution": dataset.distribution || [],
+  // Add advanced properties if available
+  ...(dataset.advancedProperties?.spatialCoverage && {
+    spatialCoverage: {
+      "@type": "Place",
+      "name": dataset.advancedProperties.spatialCoverage.name,
+      "description": dataset.advancedProperties.spatialCoverage.description,
+      ...(dataset.advancedProperties.spatialCoverage.geo && {
+        geo: {
+          "@type": dataset.advancedProperties.spatialCoverage.geo.type,
+          ...(dataset.advancedProperties.spatialCoverage.geo.box && {
+            box: dataset.advancedProperties.spatialCoverage.geo.box
+          })
+        }
+      })
+    }
+  }),
+  ...(dataset.advancedProperties?.temporalCoverage && {
+    temporalCoverage: dataset.advancedProperties.temporalCoverage
+  }),
+  ...(dataset.advancedProperties?.variableMeasured && {
+    variableMeasured: dataset.advancedProperties.variableMeasured
+  }),
+  ...(dataset.advancedProperties?.measurementTechnique && {
+    measurementTechnique: dataset.advancedProperties.measurementTechnique
+  })
+};
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={title} description={description || dataset.description} />
+		
+		<!-- JSON+LD Structured Data -->
+		<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+		
+		<style>
+			main {
+				width: 960px;
+				margin: 0 auto;
+				padding: 2rem 0;
+			}
+			.dataset-header {
+				text-align: center;
+				margin-bottom: 3rem;
+			}
+			.dataset-title {
+				font-size: 2.5rem;
+				margin: 0 0 1rem 0;
+				color: rgb(var(--black));
+			}
+			.dataset-description {
+				font-size: 1.2rem;
+				color: rgb(var(--gray));
+				max-width: 600px;
+				margin: 0 auto;
+				line-height: 1.6;
+			}
+			.dataset-meta {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+				gap: 2rem;
+				margin: 3rem 0;
+			}
+			.meta-item {
+				background: #f8f9fa;
+				padding: 1.5rem;
+				border-radius: 8px;
+				border-left: 4px solid rgb(var(--accent));
+			}
+			.meta-label {
+				font-weight: bold;
+				color: rgb(var(--black));
+				margin-bottom: 0.5rem;
+				text-transform: uppercase;
+				font-size: 0.9rem;
+				letter-spacing: 0.5px;
+			}
+			.meta-value {
+				color: rgb(var(--gray));
+				font-size: 1.1rem;
+			}
+			.dataset-content {
+				background: white;
+				padding: 2rem;
+				border-radius: 12px;
+				box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+				margin: 2rem 0;
+			}
+			.distribution-list {
+				list-style: none;
+				padding: 0;
+			}
+			.distribution-item {
+				background: #f8f9fa;
+				padding: 1.5rem;
+				margin: 1rem 0;
+				border-radius: 8px;
+				border: 1px solid #e9ecef;
+			}
+			.distribution-name {
+				font-weight: bold;
+				color: rgb(var(--black));
+				margin-bottom: 0.5rem;
+			}
+			.distribution-description {
+				color: rgb(var(--gray));
+				margin-bottom: 1rem;
+			}
+			.distribution-details {
+				display: flex;
+				gap: 2rem;
+				font-size: 0.9rem;
+				color: rgb(var(--gray));
+			}
+			.download-btn {
+				display: inline-block;
+				background: #2c3e50;
+				color: white;
+				padding: 0.75rem 1.5rem;
+				text-decoration: none;
+				border-radius: 6px;
+				font-weight: bold;
+				transition: background-color 0.2s ease;
+			}
+			.download-btn:hover {
+				background: #34495e;
+			}
+			.external-disclaimer {
+				background: #fff3cd;
+				border: 1px solid #ffeaa7;
+				border-radius: 8px;
+				padding: 1.5rem;
+				margin: 2rem 0;
+				border-left: 4px solid #f39c12;
+			}
+			
+			.external-disclaimer h3 {
+				margin: 0 0 1rem 0;
+				color: #856404;
+			}
+			
+			.external-disclaimer p {
+				margin: 0 0 1rem 0;
+				color: #856404;
+				line-height: 1.6;
+			}
+			
+			.external-link {
+				display: inline-block;
+				background: #f39c12;
+				color: white;
+				padding: 0.75rem 1.5rem;
+				text-decoration: none;
+				border-radius: 6px;
+				font-weight: bold;
+				transition: background-color 0.2s ease;
+			}
+			
+			.external-link:hover {
+				background: #e67e22;
+			}
+			
+			@media (max-width: 720px) {
+				main {
+					width: 100%;
+					padding: 1rem;
+				}
+				.dataset-title {
+					font-size: 2rem;
+				}
+				.dataset-meta {
+					grid-template-columns: 1fr;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main>
+			{!dataset.url.includes('spotchi.github.io') && !dataset.url.includes('qualiaworks.com') && (
+				<div class="external-disclaimer">
+					<h3>⚠️ External Dataset Disclaimer</h3>
+					<p>
+						This is an external dataset hosted outside of our domain. This page only displays metadata 
+						and information about the dataset. To access the actual data, please visit the original source 
+						using the link below.
+					</p>
+					<a href={dataset.url} target="_blank" rel="noopener noreferrer" class="external-link">
+						Visit External Dataset →
+					</a>
+				</div>
+			)}
+			<div class="dataset-header">
+				<h1 class="dataset-title">{dataset.name}</h1>
+				<p class="dataset-description">{dataset.description}</p>
+			</div>
+			
+			<div class="dataset-meta">
+				<div class="meta-item">
+					<div class="meta-label">Creator</div>
+					<div class="meta-value">{dataset.creator || SITE_TITLE}</div>
+				</div>
+				<div class="meta-item">
+					<div class="meta-label">Published</div>
+					<div class="meta-value">{dataset.datePublished || new Date().toLocaleDateString()}</div>
+				</div>
+				<div class="meta-item">
+					<div class="meta-label">License</div>
+					<div class="meta-value">{dataset.license || "CC BY 4.0"}</div>
+				</div>
+				<div class="meta-item">
+					<div class="meta-label">Keywords</div>
+					<div class="meta-value">{dataset.keywords?.join(", ") || "None specified"}</div>
+				</div>
+			</div>
+			
+			<div class="dataset-content">
+				<slot />
+			</div>
+			
+			{dataset.distribution && dataset.distribution.length > 0 && (
+				<div class="dataset-content">
+					<h2>Data Distribution</h2>
+					<ul class="distribution-list">
+						{dataset.distribution.map((dist) => (
+							<li class="distribution-item">
+								<div class="distribution-name">{dist.name}</div>
+								<div class="distribution-description">{dist.description}</div>
+								<div class="distribution-details">
+									<span>Format: {dist.encodingFormat}</span>
+									{dist.fileSize && <span>Size: {dist.fileSize}</span>}
+								</div>
+								<a href={dist.contentUrl} class="download-btn" download>
+									Download {dist.encodingFormat?.toUpperCase() || 'File'}
+								</a>
+							</li>
+						))}
+					</ul>
+				</div>
+			)}
+		</main>
+		<Footer />
+	</body>
+</html>
