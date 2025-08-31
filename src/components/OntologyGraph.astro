@@ -2,6 +2,16 @@
 // Ontology Graph Component
 // Displays a visual representation of schema.org ontologies used in the project
 
+import { 
+  qualiaworksOrganization, 
+  brusselsPlace, 
+  person, 
+  learningResource, 
+  article, 
+  datasets,
+  getAllDatasets 
+} from '../data/datasets';
+
 interface OntologyNode {
   id: string;
   label: string;
@@ -17,77 +27,132 @@ interface OntologyEdge {
   label: string;
 }
 
-// Define the ontology nodes based on what's used in the project
-const ontologyNodes: OntologyNode[] = [
-  {
-    id: "Dataset",
-    label: "Dataset",
-    type: "core",
-    description: "Collections of data with metadata about content, format, and distribution",
-    examples: ["Jigsaw Agile Community Rules Classification"],
-    properties: ["name", "description", "url", "creator", "license", "datePublished", "dateModified", "keywords", "distribution"]
-  },
-  {
-    id: "Organization",
-    label: "Organization",
-    type: "entity",
-    description: "Businesses, institutions, or organized groups",
-    examples: ["Jigsaw", "Qualia Works"],
-    properties: ["name", "url", "description"]
-  },
-  {
-    id: "Person",
-    label: "Person",
-    type: "entity",
-    description: "Individual human beings",
-    examples: ["Authors", "Contributors", "Creators"],
-    properties: ["name", "jobTitle", "description"]
-  },
-  {
-    id: "LearningResource",
-    label: "LearningResource",
-    type: "content",
-    description: "Educational content like tutorials, courses, and documentation",
-    examples: ["Blog posts", "Tutorials", "Documentation"],
-    properties: ["name", "teaches", "educationalLevel", "description"]
-  },
-  {
-    id: "DataDownload",
-    label: "DataDownload",
-    type: "distribution",
-    description: "Files available for download",
-    examples: ["train.csv", "test.csv", "sample_submission.csv"],
-    properties: ["name", "description", "encodingFormat", "contentUrl", "fileSize"]
-  },
-  {
-    id: "Place",
-    label: "Place",
-    type: "location",
-    description: "Geographic locations and spatial coverage",
-    examples: ["Geographic regions", "Spatial boundaries"],
-    properties: ["name", "description", "geo"]
-  },
-  {
-    id: "Article",
-    label: "Article",
-    type: "content",
-    description: "Blog posts and written content",
-    examples: ["Agent project blog", "Black Swans review"],
-    properties: ["headline", "author", "datePublished", "description"]
-  }
+// Extract all entities from the datasets.ts file
+const allEntities = [
+  qualiaworksOrganization,
+  brusselsPlace,
+  person,
+  learningResource,
+  article,
+  ...getAllDatasets()
 ];
 
-// Define relationships between ontologies
-const ontologyEdges: OntologyEdge[] = [
-  { source: "Dataset", target: "Organization", label: "creator" },
-  { source: "Dataset", target: "DataDownload", label: "distribution" },
-  { source: "Dataset", target: "Place", label: "spatialCoverage" },
-  { source: "Article", target: "Person", label: "author" },
-  { source: "Article", target: "Organization", label: "publisher" },
-  { source: "LearningResource", target: "Person", label: "creator" },
-  { source: "LearningResource", target: "Organization", label: "provider" },
-  { source: "Person", target: "Place", label: "workLocation" }
-];
+// Also extract nested entities like DataDownload from dataset distributions
+const nestedEntities: any[] = [];
+getAllDatasets().forEach(dataset => {
+  if (dataset.distribution && Array.isArray(dataset.distribution)) {
+    dataset.distribution.forEach((dist: any) => {
+      if (dist['@type'] === 'DataDownload') {
+        nestedEntities.push(dist);
+      }
+    });
+  }
+});
+
+// Combine all entities and cast to any to handle schema.org properties
+const allEntitiesWithNested = [...allEntities, ...nestedEntities] as any[];
+
+// Extract unique types and their properties
+const typeMap = new Map<string, { entities: any[], properties: Set<string> }>();
+
+allEntitiesWithNested.forEach(entity => {
+  if (entity['@type']) {
+    const type = Array.isArray(entity['@type']) ? entity['@type'][0] : entity['@type'];
+    
+    if (!typeMap.has(type)) {
+      typeMap.set(type, { entities: [], properties: new Set() });
+    }
+    
+    typeMap.get(type)!.entities.push(entity);
+    
+    // Extract properties (excluding @type, @id, @context)
+    Object.keys(entity).forEach(key => {
+      if (!key.startsWith('@') && key !== '@type' && key !== '@id' && key !== '@context') {
+        typeMap.get(type)!.properties.add(key);
+      }
+    });
+  }
+});
+
+// Build ontology nodes dynamically
+const ontologyNodes: OntologyNode[] = Array.from(typeMap.entries()).map(([type, data]) => {
+  // Get examples from entities
+  const examples = data.entities.slice(0, 3).map(entity => {
+    if (entity.name) return entity.name;
+    if (entity['@id']) return entity['@id'].split('/').pop() || entity['@id'];
+    return 'Unnamed entity';
+  });
+  
+  // Categorize types
+  let category = 'entity';
+  if (type === 'Dataset') category = 'core';
+  else if (['Article', 'LearningResource'].includes(type)) category = 'content';
+  else if (type === 'DataDownload') category = 'distribution';
+  else if (type === 'Place') category = 'location';
+  
+  return {
+    id: type,
+    label: type,
+    type: category,
+    description: `Schema.org ${type} entities used in this project`,
+    examples: examples,
+    properties: Array.from(data.properties)
+  };
+});
+
+// Build edges based on actual relationships in the data
+const ontologyEdges: OntologyEdge[] = [];
+
+allEntitiesWithNested.forEach(entity => {
+  if (entity['@type']) {
+    const sourceType = Array.isArray(entity['@type']) ? entity['@type'][0] : entity['@type'];
+    
+    Object.entries(entity).forEach(([key, value]) => {
+      if (key.startsWith('@') || key === '@type' || key === '@id' || key === '@context') return;
+      
+      if (value && typeof value === 'object' && (value as any)['@id']) {
+        // Find the target entity by @id
+        const targetEntity = allEntitiesWithNested.find(e => e['@id'] === (value as any)['@id']);
+        if (targetEntity && targetEntity['@type']) {
+          const targetType = Array.isArray(targetEntity['@type']) ? targetEntity['@type'][0] : targetEntity['@type'];
+          
+          // Avoid self-references and duplicate edges
+          if (sourceType !== targetType) {
+            const edgeExists = ontologyEdges.some(edge => 
+              edge.source === sourceType && edge.target === targetType && edge.label === key
+            );
+            
+            if (!edgeExists) {
+              ontologyEdges.push({
+                source: sourceType,
+                target: targetType,
+                label: key
+              });
+            }
+          }
+        }
+      } else if (value && typeof value === 'object' && (value as any)['@type']) {
+        // Handle inline objects with @type but no @id
+        const targetType = Array.isArray((value as any)['@type']) ? (value as any)['@type'][0] : (value as any)['@type'];
+        
+        // Avoid self-references and duplicate edges
+        if (sourceType !== targetType) {
+          const edgeExists = ontologyEdges.some(edge => 
+            edge.source === sourceType && edge.target === targetType && edge.label === key
+          );
+          
+          if (!edgeExists) {
+            ontologyEdges.push({
+              source: sourceType,
+              target: targetType,
+              label: key
+            });
+          }
+        }
+      }
+    });
+  }
+});
 
 // Group nodes by type for better organization
 const nodeTypes = {
@@ -97,6 +162,26 @@ const nodeTypes = {
   distribution: { color: "#8b5cf6", borderColor: "#7c3aed" },
   location: { color: "#ef4444", borderColor: "#dc2626" }
 };
+
+// Add any missing edges that might not be captured by the automatic detection
+const additionalEdges: OntologyEdge[] = [
+  { source: "Dataset", target: "DataDownload", label: "distribution" },
+  { source: "LearningResource", target: "Organization", label: "provider" },
+  { source: "Article", target: "Organization", label: "publisher" }
+];
+
+// Merge additional edges, avoiding duplicates
+additionalEdges.forEach(edge => {
+  const edgeExists = ontologyEdges.some(existingEdge => 
+    existingEdge.source === edge.source && 
+    existingEdge.target === edge.target && 
+    existingEdge.label === edge.label
+  );
+  
+  if (!edgeExists) {
+    ontologyEdges.push(edge);
+  }
+});
 ---
 
 <div class="ontology-graph-container">

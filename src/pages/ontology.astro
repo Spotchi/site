@@ -2,6 +2,119 @@
 import Layout from '../layouts/Layout.astro';
 import { SITE_TITLE } from '../consts';
 import OntologyGraph from '../components/OntologyGraph.astro';
+import { 
+  qualiaworksOrganization, 
+  brusselsPlace, 
+  person, 
+  learningResource, 
+  article, 
+  getAllDatasets 
+} from '../data/datasets';
+
+// Build the complete graph with context
+const graphWithContext = {
+  "@context": "https://schema.org",
+  "@graph": [
+    article,
+    learningResource,
+    ...getAllDatasets(),
+    person,
+    qualiaworksOrganization,
+    brusselsPlace,
+  ]
+};
+
+// Extract all entities for the comprehensive graph
+const allEntities = graphWithContext["@graph"] as any[];
+
+// Extract nested DataDownload entities
+const nestedEntities: any[] = [];
+getAllDatasets().forEach(dataset => {
+  if (dataset.distribution && Array.isArray(dataset.distribution)) {
+    dataset.distribution.forEach((dist: any) => {
+      if (dist['@type'] === 'DataDownload') {
+        nestedEntities.push(dist);
+      }
+    });
+  }
+});
+
+const allEntitiesWithNested = [...allEntities, ...nestedEntities] as any[];
+
+// Function to get color for entity types
+function getTypeColor(type: string): string {
+  const colors: Record<string, string> = {
+    'Organization': '#10b981',
+    'Person': '#3b82f6', 
+    'Place': '#ef4444',
+    'LearningResource': '#f59e0b',
+    'Article': '#f59e0b',
+    'Dataset': '#8b5cf6',
+    'DataDownload': '#8b5cf6',
+    'Unknown': '#6b7280'
+  };
+  return colors[type] || '#6b7280';
+}
+
+// Build comprehensive graph data
+const comprehensiveNodes = allEntitiesWithNested.map((entity, index) => {
+  const type = Array.isArray(entity['@type']) ? entity['@type'][0] : entity['@type'];
+  const name = entity.name || entity['@id']?.split('/').pop() || `Entity ${index}`;
+  
+  return {
+    id: entity['@id'] || `entity-${index}`,
+    label: name,
+    type: type || 'Unknown',
+    entity: entity
+  };
+});
+
+// Pre-compute colors for legend to avoid calling getTypeColor in JSX
+const entityTypes = Array.from(new Set(comprehensiveNodes.map(n => n.type)));
+const legendItems = entityTypes.map(type => ({
+  type,
+  color: getTypeColor(type)
+}));
+
+// Create a color mapping object for client-side use
+const typeColorMap: Record<string, string> = {};
+entityTypes.forEach(type => {
+  typeColorMap[type] = getTypeColor(type);
+});
+
+const comprehensiveEdges: Array<{source: string, target: string, label: string}> = [];
+
+allEntitiesWithNested.forEach(entity => {
+  if (entity['@type']) {
+    const sourceId = entity['@id'] || `entity-${allEntitiesWithNested.indexOf(entity)}`;
+    
+    Object.entries(entity).forEach(([key, value]) => {
+      if (key.startsWith('@') || key === '@type' || key === '@id' || key === '@context') return;
+      
+      if (value && typeof value === 'object' && (value as any)['@id']) {
+        const targetId = (value as any)['@id'];
+        comprehensiveEdges.push({
+          source: sourceId,
+          target: targetId,
+          label: key
+        });
+      } else if (value && typeof value === 'object' && (value as any)['@type']) {
+        // Handle inline objects with @type but no @id
+        const targetEntity = allEntitiesWithNested.find(e => 
+          e['@type'] === (value as any)['@type'] && 
+          e.name === (value as any)['name']
+        );
+        if (targetEntity && targetEntity['@id']) {
+          comprehensiveEdges.push({
+            source: sourceId,
+            target: targetEntity['@id'],
+            label: key
+          });
+        }
+      }
+    });
+  }
+});
 ---
 
 <Layout title={`Ontology - ${SITE_TITLE}`} description="Learn about the schema.org ontology and semantic concepts used on this site">
@@ -22,6 +135,53 @@ import OntologyGraph from '../components/OntologyGraph.astro';
 
     <!-- Add the interactive ontology graph -->
     <OntologyGraph />
+
+    <!-- Add comprehensive data graph -->
+    <section class="comprehensive-graph">
+      <h2>Complete Data Graph</h2>
+      <p>
+        This graph shows all the actual entities and relationships defined in this project's schema.org data:
+      </p>
+      
+      <div class="graph-stats">
+        <div class="stat-item">
+          <span class="stat-number">{comprehensiveNodes.length}</span>
+          <span class="stat-label">Entities</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">{comprehensiveEdges.length}</span>
+          <span class="stat-label">Relationships</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">{new Set(comprehensiveNodes.map(n => n.type)).size}</span>
+          <span class="stat-label">Types</span>
+        </div>
+      </div>
+
+      <div class="comprehensive-graph-canvas" id="comprehensive-graph">
+        <!-- Comprehensive graph will be rendered here -->
+        <div class="zoom-controls">
+          <button class="zoom-btn" id="zoom-in" title="Zoom In">+</button>
+          <button class="zoom-btn" id="zoom-out" title="Zoom Out">−</button>
+          <button class="zoom-btn" id="reset-zoom" title="Reset View">⌂</button>
+        </div>
+        <div class="zoom-instructions">
+          <p>💡 <strong>Zoom:</strong> Scroll wheel or pinch • <strong>Pan:</strong> Click and drag • <strong>Reset:</strong> Click ⌂</p>
+        </div>
+      </div>
+
+      <div class="graph-legend">
+        <h4>Entity Types</h4>
+        <div class="legend-items">
+          {legendItems.map(item => (
+            <div class="legend-item">
+              <span class="legend-color" style={`background-color: ${item.color}`}></span>
+              <span>{item.type}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
 
     <section class="concepts-overview">
       <h2>Key Concepts Used</h2>
@@ -105,6 +265,175 @@ import OntologyGraph from '../components/OntologyGraph.astro';
   </div>
 </Layout>
 
+<script define:vars={{ comprehensiveNodes, comprehensiveEdges, typeColorMap }}>
+
+  // Wait for DOM to be ready
+  document.addEventListener('DOMContentLoaded', function() {
+    const container = document.getElementById('comprehensive-graph');
+    if (!container) return;
+
+    // Set up the SVG with zoom support
+    const width = container.clientWidth;
+    const height = 500;
+    
+    const svg = d3.select(container)
+      .append('svg')
+      .attr('width', width)
+      .attr('height', height);
+    
+    // Create zoom behavior
+    const zoom = d3.zoom()
+      .scaleExtent([0.1, 10]) // Min zoom 0.1x, max zoom 10x
+      .on('zoom', (event) => {
+        // Apply zoom transform to the main group
+        mainGroup.attr('transform', event.transform);
+      });
+    
+    // Apply zoom to SVG
+    svg.call(zoom);
+    
+    // Create main group for all graph elements
+    const mainGroup = svg.append('g');
+    
+    // Create arrow marker for edges
+    svg.append('defs').append('marker')
+      .attr('id', 'arrowhead-comprehensive')
+      .attr('viewBox', '-0 -5 10 10')
+      .attr('refX', 15)
+      .attr('refY', 0)
+      .attr('orient', 'auto')
+      .attr('markerWidth', 6)
+      .attr('markerHeight', 6)
+      .attr('xoverflow', 'visible')
+      .append('svg:path')
+      .attr('d', 'M 0,-5 L 10 ,0 L 0,5')
+      .attr('fill', '#999')
+      .style('stroke', 'none');
+
+    // Create force simulation
+    const simulation = d3.forceSimulation(comprehensiveNodes)
+      .force('link', d3.forceLink(comprehensiveEdges).id(d => d.id).distance(100))
+      .force('charge', d3.forceManyBody().strength(-200))
+      .force('center', d3.forceCenter(width / 2, height / 2))
+      .force('collision', d3.forceCollide().radius(25));
+
+    // Create links
+    const links = mainGroup.append('g')
+      .selectAll('line')
+      .data(comprehensiveEdges)
+      .enter()
+      .append('line')
+      .attr('stroke', '#999')
+      .attr('stroke-width', 1.5)
+      .attr('stroke-opacity', 0.6)
+      .attr('marker-end', 'url(#arrowhead-comprehensive)');
+
+    // Create link labels
+    const linkLabels = mainGroup.append('g')
+      .selectAll('text')
+      .data(comprehensiveEdges)
+      .enter()
+      .append('text')
+      .text(d => d.label)
+      .attr('font-size', '10px')
+      .attr('fill', '#666')
+      .attr('text-anchor', 'middle')
+      .attr('dy', -3);
+
+    // Create nodes
+    const nodeGroups = mainGroup.append('g')
+      .selectAll('g')
+      .data(comprehensiveNodes)
+      .enter()
+      .append('g')
+      .call(d3.drag()
+        .on('start', dragstarted)
+        .on('drag', dragged)
+        .on('end', dragended));
+
+    // Add circles to nodes
+    nodeGroups.append('circle')
+      .attr('r', 20)
+      .attr('fill', d => typeColorMap[d.type] || '#6b7280')
+      .attr('stroke', '#fff')
+      .attr('stroke-width', 2)
+      .style('cursor', 'pointer')
+      .on('mouseover', function(event, d) {
+        d3.select(this).attr('r', 25);
+        d3.select(this).attr('stroke-width', 3);
+      })
+      .on('mouseout', function(event, d) {
+        d3.select(this).attr('r', 20);
+        d3.select(this).attr('stroke-width', 2);
+      });
+
+    // Add labels to nodes
+    nodeGroups.append('text')
+      .text(d => d.label.length > 15 ? d.label.substring(0, 15) + '...' : d.label)
+      .attr('text-anchor', 'middle')
+      .attr('dy', '0.35em')
+      .attr('font-size', '10px')
+      .attr('font-weight', 'bold')
+      .attr('fill', '#2d3748')
+      .style('pointer-events', 'none');
+
+    // Update positions on simulation tick
+    simulation.on('tick', () => {
+      links
+        .attr('x1', d => d.source.x)
+        .attr('y1', d => d.source.y)
+        .attr('x2', d => d.target.x)
+        .attr('y2', d => d.target.y);
+      
+      linkLabels
+        .attr('x', d => (d.source.x + d.target.x) / 2)
+        .attr('y', d => (d.source.y + d.target.y) / 2);
+      
+      nodeGroups
+        .attr('transform', d => `translate(${d.x},${d.y})`);
+    });
+
+    // Drag functions
+    function dragstarted(event, d) {
+      if (!event.active) simulation.alphaTarget(0.3).restart();
+      d.fx = d.x;
+      d.fy = d.y;
+    }
+
+    function dragged(event, d) {
+      d.fx = event.x;
+      d.fy = event.y;
+    }
+
+    function dragended(event, d) {
+      if (!event.active) simulation.alphaTarget(0);
+      d.fx = null;
+      d.fy = null;
+    }
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+      const newWidth = container.clientWidth;
+      svg.attr('width', newWidth);
+      simulation.force('center', d3.forceCenter(newWidth / 2, height / 2));
+      simulation.alpha(1).restart();
+    });
+
+    // Zoom control button handlers
+    document.getElementById('zoom-in')?.addEventListener('click', () => {
+      svg.transition().duration(300).call(zoom.scaleBy, 1.5);
+    });
+    
+    document.getElementById('zoom-out')?.addEventListener('click', () => {
+      svg.transition().duration(300).call(zoom.scaleBy, 0.75);
+    });
+    
+    document.getElementById('reset-zoom')?.addEventListener('click', () => {
+      svg.transition().duration(300).call(zoom.transform, d3.zoomIdentity);
+    });
+  });
+</script>
+
 <style>
   .ontology-header {
     text-align: center;
@@ -126,7 +455,7 @@ import OntologyGraph from '../components/OntologyGraph.astro';
   }
   
   .ontology-content {
-    max-width: 700px;
+    max-width: 1200px;
     margin: 0 auto;
   }
   
@@ -192,6 +521,131 @@ import OntologyGraph from '../components/OntologyGraph.astro';
     text-align: center;
   }
   
+  .comprehensive-graph {
+    background: #f8f9fa;
+  }
+  
+  .graph-stats {
+    display: flex;
+    justify-content: space-around;
+    margin: 1rem 0;
+    padding: 1rem;
+    background: white;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  
+  .stat-item {
+    text-align: center;
+  }
+  
+  .stat-number {
+    display: block;
+    font-size: 2rem;
+    font-weight: bold;
+    color: rgb(var(--accent));
+  }
+  
+  .stat-label {
+    font-size: 0.9rem;
+    color: rgb(var(--gray));
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .comprehensive-graph-canvas {
+    width: 100%;
+    height: 500px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    background: white;
+    position: relative;
+    overflow: hidden;
+    margin: 1rem 0;
+  }
+  
+  .zoom-controls {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    z-index: 10;
+  }
+  
+  .zoom-btn {
+    width: 32px;
+    height: 32px;
+    border: 1px solid #e5e7eb;
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    color: #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  
+  .zoom-btn:hover {
+    background: #f8f9fa;
+    border-color: #d1d5db;
+    color: #374151;
+  }
+  
+  .zoom-instructions {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    color: #666;
+    border: 1px solid #e5e7eb;
+    backdrop-filter: blur(4px);
+  }
+  
+  .zoom-instructions p {
+    margin: 0;
+    line-height: 1.3;
+  }
+  
+  .graph-legend {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  
+  .legend-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 0.5rem;
+  }
+  
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: rgb(var(--gray));
+  }
+  
+  .legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  
   a {
     color: rgb(var(--accent));
     text-decoration: none;
@@ -208,6 +662,19 @@ import OntologyGraph from '../components/OntologyGraph.astro';
     
     .ontology-header h1 {
       font-size: 1.75rem;
+    }
+    
+    .graph-stats {
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .comprehensive-graph-canvas {
+      height: 400px;
+    }
+    
+    .legend-items {
+      justify-content: center;
     }
   }
 </style>
