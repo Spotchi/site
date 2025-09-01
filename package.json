@@ -15,7 +15,7 @@
     "@astrojs/rss": "^4.0.11",
     "@astrojs/sitemap": "^3.2.1",
     "@types/jsonld": "^1.5.15",
-    "astro": "^5.5.2",
+    "astro": "^5.13.5",
     "jsonld": "^8.3.3",
     "rehype-katex": "^7.0.1",
     "remark-math": "^6.0.0",
