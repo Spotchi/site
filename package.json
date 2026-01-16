@@ -16,7 +16,7 @@
     "@astrojs/sitemap": "^3.2.1",
     "@types/jsonld": "^1.5.15",
     "astro": "^5.16.0",
-    "jsonld": "^8.3.3",
+    "jsonld": "^9.0.0",
     "rehype-katex": "^7.0.1",
     "remark-math": "^6.0.0",
     "schema-dts": "^1.1.5"
