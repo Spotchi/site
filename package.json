@@ -11,11 +11,11 @@
     "migrate": "node scripts/migrate-jekyll-posts.js"
   },
   "dependencies": {
-    "@astrojs/mdx": "^6.0.3",
+    "@astrojs/mdx": "^7.0.0",
     "@astrojs/rss": "^4.0.15",
     "@astrojs/sitemap": "^3.2.1",
     "@types/jsonld": "^1.5.15",
-    "astro": "^6.4.8",
+    "astro": "^7.0.2",
     "jsonld": "^9.0.0",
     "rehype-katex": "^7.0.1",
     "remark-math": "^6.0.0",
